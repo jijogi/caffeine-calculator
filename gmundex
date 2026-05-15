@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>미니 게임</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+    }
+
+    #player {
+        width: 50px;
+        height: 50px;
+        background: cyan;
+        position: absolute;
+        bottom: 20px;
+        left: 175px;
+    }
+
+    .enemy {
+        width: 50px;
+        height: 50px;
+        background: red;
+        position: absolute;
+        top: 0;
+    }
+</style>
+</head>
+<body>
+
+<div id="player"></div>
+
+<script>
+const player = document.getElementById("player");
+
+let playerX = 175;
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+        playerX -= 20;
+    }
+
+    if (e.key === "ArrowRight") {
+        playerX += 20;
+    }
+
+    player.style.left = playerX + "px";
+});
+
+function createEnemy() {
+    const enemy = document.createElement("div");
+    enemy.classList.add("enemy");
+
+    enemy.style.left = Math.random() * 350 + "px";
+
+    document.body.appendChild(enemy);
+
+    let y = 0;
+
+    const fall = setInterval(() => {
+        y += 5;
+        enemy.style.top = y + "px";
+
+        const enemyRect = enemy.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+
+        if (
+            enemyRect.left < playerRect.right &&
+            enemyRect.right > playerRect.left &&
+            enemyRect.top < playerRect.bottom &&
+            enemyRect.bottom > playerRect.top
+        ) {
+            alert("게임 오버!");
+            location.reload();
+        }
+
+        if (y > window.innerHeight) {
+            enemy.remove();
+            clearInterval(fall);
+        }
+    }, 20);
+}
+
+setInterval(createEnemy, 1000);
+</script>
+
+</body>
+</html>
