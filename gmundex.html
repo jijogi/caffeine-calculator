@@ -2,12 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>미니 게임</title>
+<title>사방 피하기 게임</title>
+
 <style>
     body {
         margin: 0;
         overflow: hidden;
         background: black;
+        touch-action: none;
     }
 
     #player {
@@ -15,8 +17,10 @@
         height: 50px;
         background: cyan;
         position: absolute;
-        bottom: 20px;
-        left: 175px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 10px;
     }
 
     .enemy {
@@ -24,17 +28,171 @@
         height: 50px;
         background: red;
         position: absolute;
-        top: 0;
+        border-radius: 10px;
+    }
+
+    #timer {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        color: white;
+        font-size: 30px;
+        font-family: sans-serif;
     }
 </style>
 </head>
+
 <body>
 
+<div id="timer">0초</div>
 <div id="player"></div>
 
 <script>
 const player = document.getElementById("player");
+const timerText = document.getElementById("timer");
 
+let playerX = window.innerWidth / 2 - 25;
+let playerY = window.innerHeight / 2 - 25;
+
+let seconds = 0;
+
+player.style.left = playerX + "px";
+player.style.top = playerY + "px";
+
+// 시간 카운트
+setInterval(() => {
+    seconds++;
+    timerText.textContent = seconds + "초";
+}, 1000);
+
+// 플레이어 이동
+function movePlayer(x, y) {
+    playerX = x - 25;
+    playerY = y - 25;
+
+    // 화면 제한
+    if (playerX < 0) playerX = 0;
+    if (playerX > window.innerWidth - 50) {
+        playerX = window.innerWidth - 50;
+    }
+
+    if (playerY < 0) playerY = 0;
+    if (playerY > window.innerHeight - 50) {
+        playerY = window.innerHeight - 50;
+    }
+
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
+}
+
+// 마우스
+document.addEventListener("mousemove", (e) => {
+    movePlayer(e.clientX, e.clientY);
+});
+
+// 터치
+document.addEventListener("touchmove", (e) => {
+    movePlayer(
+        e.touches[0].clientX,
+        e.touches[0].clientY
+    );
+});
+
+// 적 생성
+function createEnemy() {
+    const enemy = document.createElement("div");
+    enemy.classList.add("enemy");
+
+    let x, y, dx, dy;
+
+    const side = Math.floor(Math.random() * 4);
+
+    // 위
+    if (side === 0) {
+        x = Math.random() * window.innerWidth;
+        y = -50;
+        dx = (playerX - x) / 100;
+        dy = (playerY - y) / 100;
+    }
+
+    // 오른쪽
+    if (side === 1) {
+        x = window.innerWidth + 50;
+        y = Math.random() * window.innerHeight;
+        dx = (playerX - x) / 100;
+        dy = (playerY - y) / 100;
+    }
+
+    // 아래
+    if (side === 2) {
+        x = Math.random() * window.innerWidth;
+        y = window.innerHeight + 50;
+        dx = (playerX - x) / 100;
+        dy = (playerY - y) / 100;
+    }
+
+    // 왼쪽
+    if (side === 3) {
+        x = -50;
+        y = Math.random() * window.innerHeight;
+        dx = (playerX - x) / 100;
+        dy = (playerY - y) / 100;
+    }
+
+    enemy.style.left = x + "px";
+    enemy.style.top = y + "px";
+
+    document.body.appendChild(enemy);
+
+    const move = setInterval(() => {
+        x += dx * 5;
+        y += dy * 5;
+
+        enemy.style.left = x + "px";
+        enemy.style.top = y + "px";
+
+        const enemyRect = enemy.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+
+        // 충돌 판정
+        if (
+            enemyRect.left < playerRect.right &&
+            enemyRect.right > playerRect.left &&
+            enemyRect.top < playerRect.bottom &&
+            enemyRect.bottom > playerRect.top
+        ) {
+            alert("게임 오버!\n생존 시간: " + seconds + "초");
+            location.reload();
+        }
+
+        // 화면 밖 제거
+        if (
+            x < -100 ||
+            x > window.innerWidth + 100 ||
+            y < -100 ||
+            y > window.innerHeight + 100
+        ) {
+            enemy.remove();
+            clearInterval(move);
+        }
+    }, 20);
+}
+
+// 점점 어려워짐
+let spawnRate = 1000;
+
+setInterval(() => {
+    createEnemy();
+
+    if (spawnRate > 300) {
+        spawnRate -= 10;
+    }
+}, spawnRate);
+
+</script>
+
+</body>
+</html>
 let playerX = 175;
 
 document.addEventListener("keydown", (e) => {
