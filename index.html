@@ -253,3 +253,27 @@
   </script>
 </body>
 </html>
+
+const secret = [
+  'ArrowRight','ArrowRight',
+  'ArrowLeft','ArrowLeft',
+  'ArrowDown','ArrowDown',
+  'ArrowUp','ArrowUp',
+];
+
+let input = [];
+
+window.addEventListener('keydown', (e) => {
+  input.push(e.key);
+
+  if (input.length > secret.length) {
+    input.shift();
+  }
+
+  if (JSON.stringify(input) === JSON.stringify(secret)) {
+    document.body.style.background = '#111';
+    document.body.style.color = '#00ff99';
+
+    alert('☕ 카페인 오버클럭 모드 활성화');
+  }
+});
