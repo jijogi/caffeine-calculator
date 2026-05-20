@@ -162,11 +162,23 @@
       document.getElementById('result').innerHTML = '입력 후 계산하기를 눌러 주세요.';
     }
 
-    function remainingAmount(amount, intakeTime, bedtime, halfLife) {
-      const elapsed = bedtime - intakeTime;
-      if (elapsed < 0) return NaN;
-      return amount * Math.pow(0.5, elapsed / halfLife);
-    }
+function remainingAmount(amount, intakeTime, bedtime, halfLife) {
+
+  // 0~5시는 다음날 새벽으로 처리
+  if (intakeTime >= 0 && intakeTime < 5) {
+    intakeTime += 24;
+  }
+
+  if (bedtime >= 0 && bedtime < 5) {
+    bedtime += 24;
+  }
+
+  const elapsed = bedtime - intakeTime;
+
+  if (elapsed < 0) return NaN;
+
+  return amount * Math.pow(0.5, elapsed / halfLife);
+}
 
     function calculate() {
       const halfLife = Number(document.getElementById('halfLife').value);
