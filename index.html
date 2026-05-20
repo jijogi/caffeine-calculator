@@ -95,7 +95,7 @@
   </style>
 </head>
 <body>
-  <h1>카페인 잔존량 계산기</h1>
+  <h1 id="title">카페인 잔존량 계산기</h1>
   <p class="note">n번 섭취해도 계산됩니다. 각 섭취 시간과 섭취량을 입력하면 취침 시 총 잔존량을 계산합니다.</p>
 
   <div class="box">
@@ -250,28 +250,128 @@
     }
 
     resetDoses();
+ // ===== 모바일 이스터에그 =====
+
+const title = document.getElementById('title');
+
+let tapCount = 0;
+let tapTimer;
+
+title.addEventListener('click', () => {
+  tapCount++;
+
+  clearTimeout(tapTimer);
+
+  tapTimer = setTimeout(() => {
+    tapCount = 0;
+  }, 1500);
+
+  if (tapCount >= 5) {
+    activateEasterEgg();
+    tapCount = 0;
+  }
+});
+
+function activateEasterEgg() {
+
+  // ===== 1. 각성 모드 =====
+
+  document.body.style.background =
+    'linear-gradient(135deg, #120f1f, #1b1333)';
+
+  document.body.style.color = '#7CFFB2';
+
+  document.querySelectorAll('.box').forEach(box => {
+    box.style.background = '#1e1a2e';
+    box.style.border = '1px solid #7CFFB2';
+    box.style.boxShadow = '0 0 14px rgba(124,255,178,0.25)';
+  });
+
+  // ===== 2. 커피 비 =====
+
+  for (let i = 0; i < 25; i++) {
+
+    const coffee = document.createElement('div');
+
+    coffee.textContent = '☕';
+
+    coffee.style.position = 'fixed';
+    coffee.style.left = Math.random() * 100 + 'vw';
+    coffee.style.top = '-50px';
+    coffee.style.fontSize = (20 + Math.random() * 20) + 'px';
+    coffee.style.zIndex = '9999';
+    coffee.style.pointerEvents = 'none';
+
+    document.body.appendChild(coffee);
+
+    coffee.animate(
+      [
+        { transform: 'translateY(0) rotate(0deg)' },
+        {
+          transform:
+            `translateY(110vh) rotate(${Math.random() * 360}deg)`
+        }
+      ],
+      {
+        duration: 2000 + Math.random() * 2000,
+        easing: 'linear'
+      }
+    );
+
+    setTimeout(() => coffee.remove(), 4000);
+  }
+
+  // ===== 3. 랜덤 드립 =====
+
+  const truths = [
+    '☕ 카페인이 당신보다 안 자고 있습니다.',
+    '😵 오늘도 수면은 패배했습니다.',
+    '🛌 이제 폰 내려놓고 잘 시간입니다.',
+    '💀 심장이 F1 엔진처럼 뛰고 있습니다.',
+    '📉 생산성보다 수면이 중요합니다.',
+    '⚡ 인간 각성 한계를 돌파했습니다.'
+  ];
+
+  const msg =
+    truths[Math.floor(Math.random() * truths.length)];
+
+  setTimeout(() => {
+    alert(msg);
+  }, 300);
+
+  // ===== 4. 고양이 등장 =====
+
+  const oldCat = document.getElementById('secret-cat');
+
+  if (oldCat) oldCat.remove();
+
+  const cat = document.createElement('img');
+
+  cat.id = 'secret-cat';
+
+  cat.src = 'https://cataas.com/cat';
+
+  cat.style.position = 'fixed';
+  cat.style.bottom = '12px';
+  cat.style.right = '12px';
+  cat.style.width = '120px';
+  cat.style.borderRadius = '14px';
+  cat.style.boxShadow = '0 4px 14px rgba(0,0,0,0.35)';
+  cat.style.zIndex = '9999';
+
+  cat.style.transform = 'translateY(20px)';
+  cat.style.opacity = '0';
+
+  cat.style.transition =
+    'all 0.5s ease';
+
+  document.body.appendChild(cat);
+
+  setTimeout(() => {
+    cat.style.transform = 'translateY(0)';
+    cat.style.opacity = '1';
+  }, 50);
+}
   </script>
 </body>
 </html>
-const secret = [
-  'ArrowRight','ArrowRight',
-  'ArrowLeft','ArrowLeft',
-  'ArrowDown','ArrowDown',
-  'ArrowUp','ArrowUp',
-];
-let input = [];
-
-window.addEventListener('keydown', (e) => {
-  input.push(e.key);
-
-  if (input.length > secret.length) {
-    input.shift();
-  }
-
-  if (JSON.stringify(input) === JSON.stringify(secret)) {
-    document.body.style.background = '#111';
-    document.body.style.color = '#00ff99';
-
-    alert('☕ 카페인 오버클럭 모드 활성화');
-  }
-});
