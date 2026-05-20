@@ -102,7 +102,7 @@
     <label>반감기, 시간</label>
     <input id="halfLife" type="number" value="5" readonly />
 
-    <label>취침 시간(시)</label>
+    <label>언제 자나요? (24시간 형식으로 입력해 주세요. 예: 오후 5시 → 17, 오전 1시 → 1)</label>
     <input id="bedtime" type="number" min="0" max="24" step="0.1" placeholder="예: 24" />
 
     <label>허용 잔존량 기준, mg</label>
@@ -110,13 +110,13 @@
   </div>
 
   <div class="box">
-    <p>카페인 섭취 기록</p>
+    <p>카페인 섭취 기록 (24시간 형식으로 입력해 주세요. 예: 오후 5시 → 17, 오전 1시 → 1)</p>
     <div id="doseList"></div>
     <button class="secondary" onclick="addDose()">섭취 추가</button>
     <button class="secondary" onclick="resetDoses()">초기화</button>
     <button onclick="calculate()">계산하기</button>
 
-    <div id="result" class="result">섭취 시간을 입력한 뒤 계산하기를 눌러 주세요.</div>
+    <div id="result" class="result">입력 후 계산하기를 눌러 주세요.</div>
   </div>
 
   <div class="box">
@@ -133,10 +133,10 @@
       const row = document.createElement('div');
       row.className = 'dose-row';
       row.innerHTML = `
-        <label>${index}번째 섭취 시간
+        <label>${index}. 언제 먹었나요?
           <input class="time" type="number" min="0" max="24" step="0.1" value="${time}" placeholder="예: 14" />
         </label>
-        <label>섭취량, mg
+        <label>얼마나 먹었나요? (mg)
           <input class="amount" type="number" min="0" step="1" value="${amount}" placeholder="예: 100" />
         </label>
         <button class="danger" onclick="removeDose(this)">삭제</button>
@@ -159,7 +159,7 @@
     function resetDoses() {
       doseList.innerHTML = '';
      addDose('', '');
-      document.getElementById('result').innerHTML = '섭취 시간을 입력한 뒤 계산하기를 눌러 주세요.';
+      document.getElementById('result').innerHTML = '입력 후 계산하기를 눌러 주세요.';
     }
 
     function remainingAmount(amount, intakeTime, bedtime, halfLife) {
@@ -234,8 +234,8 @@
           <thead>
             <tr>
               <th>번호</th>
-              <th>섭취 시간</th>
-              <th>섭취량, mg</th>
+              <th>언제 먹었나요?</th>
+              <th>얼마나 먹었나요? (mg)</th>
               <th>경과 시간</th>
               <th>잔존량, mg</th>
             </tr>
