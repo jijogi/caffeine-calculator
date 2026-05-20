@@ -162,11 +162,23 @@
       document.getElementById('result').innerHTML = '입력 후 계산하기를 눌러 주세요.';
     }
 
-    function remainingAmount(amount, intakeTime, bedtime, halfLife) {
-      const elapsed = bedtime - intakeTime;
-      if (elapsed < 0) return NaN;
-      return amount * Math.pow(0.5, elapsed / halfLife);
-    }
+function remainingAmount(amount, intakeTime, bedtime, halfLife) {
+
+  // 0~5시는 다음날 새벽으로 처리
+  if (intakeTime >= 0 && intakeTime < 5) {
+    intakeTime += 24;
+  }
+
+  if (bedtime >= 0 && bedtime < 5) {
+    bedtime += 24;
+  }
+
+  const elapsed = bedtime - intakeTime;
+
+  if (elapsed < 0) return NaN;
+
+  return amount * Math.pow(0.5, elapsed / halfLife);
+}
 
     function calculate() {
       const halfLife = Number(document.getElementById('halfLife').value);
@@ -203,10 +215,21 @@
           result.innerHTML = '시간은 0~24 사이로 입력해 주세요.';
           return;
         }
-        if (time > bedtime) {
-          result.innerHTML = `${i + 1}번째 섭취 시간이 취침 시간보다 늦습니다. 같은 날 기준으로 다시 입력해 주세요.`;
-          return;
-        }
+        let adjustedTime = time;
+let adjustedBedtime = bedtime;
+
+if (adjustedTime >= 0 && adjustedTime < 5) {
+  adjustedTime += 24;
+}
+
+if (adjustedBedtime >= 0 && adjustedBedtime < 5) {
+  adjustedBedtime += 24;
+}
+
+if (adjustedTime > adjustedBedtime) {
+  result.innerHTML = `${i + 1}번째 섭취 시간이 취침 시간보다 늦습니다.`;
+  return;
+}
         if (amount < 0) {
           result.innerHTML = '섭취량은 0 이상이어야 합니다.';
           return;
