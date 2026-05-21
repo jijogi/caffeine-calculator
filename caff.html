@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>HERONIA</title>
+
+<style>
+    body {
+        margin: 0;
+        background: black;
+        overflow: hidden;
+        font-family: monospace;
+        color: white;
+    }
+
+    canvas {
+        image-rendering: pixelated;
+        display: block;
+        margin: auto;
+        background: #111;
+    }
+
+    #dialogueBox {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.9);
+        padding: 20px;
+        box-sizing: border-box;
+        border-top: 2px solid white;
+    }
+
+    #dialogueText {
+        font-size: 20px;
+        margin-bottom: 10px;
+        white-space: pre-line;
+    }
+
+    .choice {
+        background: #222;
+        border: 1px solid white;
+        color: white;
+        padding: 10px;
+        margin-top: 5px;
+        cursor: pointer;
+    }
+
+    .choice:hover {
+        background: #444;
+    }
+
+    #deathScreen {
+        position: fixed;
+        inset: 0;
+        background: black;
+        color: red;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 30px;
+    }
+
+    #hint {
+        color: gray;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="game" width="640" height="480"></canvas>
+
+<div id="dialogueBox">
+    <div id="dialogueText"></div>
+    <div id="choices"></div>
+</div>
+
+<div id="deathScreen">
+    <div>당신은 죽었습니다.</div>
+    <div id="hint"></div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const dialogueText = document.getElementById("dialogueText");
+const choicesDiv = document.getElementById("choices");
+
+const deathScreen = document.getElementById("deathScreen");
+const hintText = document.getElementById("hint");
+
+let deaths = 0;
+
+const player = {
+    x: 300,
+    y: 220,
+    size: 24,
+    speed: 4
+};
+
+const walls = [
+    {x: 0, y: 0, w: 640, h: 20},
+    {x: 0, y: 460, w: 640, h: 20},
+    {x: 0, y: 0, w: 20, h: 480},
+    {x: 620, y: 0, w: 20, h: 480},
+
+    {x: 120, y: 100, w: 400, h: 20},
+    {x: 120, y: 100, w: 20, h: 250},
+    {x: 500, y: 100, w: 20, h: 250},
+];
+
+const spikes = [
+    {x: 250, y: 180, size: 40},
+    {x: 350, y: 280, size: 40}
+];
+
+const exitDoor = {
+    x: 540,
+    y: 380,
+    w: 40,
+    h: 60
+};
+
+const keys = {};
+
+document.addEventListener("keydown", e => {
+    keys[e.key] = true;
+});
+
+document.addEventListener("keyup", e => {
+    keys[e.key] = false;
+});
+
+function rectCollision(a, b) {
+    return (
+        a.x < b.x + b.w &&
+        a.x + a.size > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.size > b.y
+    );
+}
+
+function spikeCollision(player, spike) {
+    return (
+        player.x < spike.x + spike.size &&
+        player.x + player.size > spike.x &&
+        player.y < spike.y + spike.size &&
+        player.y + player.size > spike.y
+    );
+}
+
+function update() {
+
+    let oldX = player.x;
+    let oldY = player.y;
+
+    if (keys["ArrowUp"] || keys["w"]) player.y -= player.speed;
+    if (keys["ArrowDown"] || keys["s"]) player.y += player.speed;
+    if (keys["ArrowLeft"] || keys["a"]) player.x -= player.speed;
+    if (keys["ArrowRight"] || keys["d"]) player.x += player.speed;
+
+    for (const wall of walls) {
+        if (rectCollision(player, wall)) {
+            player.x = oldX;
+            player.y = oldY;
+        }
+    }
+
+    for (const spike of spikes) {
+        if (spikeCollision(player, spike)) {
+            die();
+        }
+    }
+
+    if (
+        player.x < exitDoor.x + exitDoor.w &&
+        player.x + player.size > exitDoor.x &&
+        player.y < exitDoor.y + exitDoor.h &&
+        player.y + player.size > exitDoor.y
+    ) {
+        ending();
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 바닥
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 벽
+    ctx.fillStyle = "#666";
+
+    for (const wall of walls) {
+        ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+    }
+
+    // 함정
+    ctx.fillStyle = "red";
+
+    for (const spike of spikes) {
+        ctx.fillRect(spike.x, spike.y, spike.size, spike.size);
+    }
+
+    // 출구
+    ctx.fillStyle = "gold";
+    ctx.fillRect(exitDoor.x, exitDoor.y, exitDoor.w, exitDoor.h);
+
+    // 플레이어
+    ctx.fillStyle = "cyan";
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+function die() {
+
+    deaths++;
+
+    deathScreen.style.display = "flex";
+
+    let message = "";
+
+    if (deaths === 1) {
+        message = "헤론께서 다시 한 번 기회를 내리셨습니다.";
+    }
+    else if (deaths === 2) {
+        message = "실수는 누구에게나 있습니다.";
+    }
+    else if (deaths === 5) {
+        message = "완벽함에 가까워지고 있습니다.";
+    }
+    else {
+        message = "올바른 선택을 하세요.";
+    }
+
+    hintText.textContent = message;
+
+    setTimeout(() => {
+
+        deathScreen.style.display = "none";
+
+        player.x = 300;
+        player.y = 220;
+
+    }, 2000);
+}
+
+function ending() {
+
+    dialogueText.innerText =
+`"...축하한단다."
+
+"이제 당신이... 되겠네요."
+
+전임 지도자 메이가
+조용히 미소지었다.`;
+
+    choicesDiv.innerHTML = "";
+
+    const button = document.createElement("div");
+    button.className = "choice";
+    button.innerText = "왕관을 받는다";
+
+    button.onclick = () => {
+
+        dialogueText.innerText =
+`헤론의 축복이 당신에게 내려옵니다.
+
+앞으로 50년 동안,
+당신은 완벽한 존재로 살아갈 것입니다.`;
+
+        choicesDiv.innerHTML = "";
+
+        setTimeout(() => {
+
+            dialogueText.innerText =
+`END 01
+
+PERFECT LEADER`;
+
+        }, 4000);
+    };
+
+    choicesDiv.appendChild(button);
+}
+
+dialogueText.innerText =
+`이곳은 지혜롭고 자애로운 여신,
+헤론이 다스리는 나라 헤로니아입니다.
+
+당신은 차기 지도자로 선택받았습니다.
+
+지도자 시험을 시작하십시오.`;
+
+gameLoop();
+</script>
+
+</body>
+</html>
