@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Simple Rhythm Game</title>
+
+<style>
+body{
+    margin:0;
+    background:#222;
+    color:white;
+    font-family:sans-serif;
+    text-align:center;
+}
+
+#score{
+    margin-top:20px;
+    font-size:24px;
+}
+
+#combo{
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+#gameArea{
+    width:400px;
+    height:600px;
+    margin:20px auto;
+    background:#333;
+    position:relative;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+.note{
+    position:absolute;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:gold;
+}
+
+#judgeLine{
+    position:absolute;
+    bottom:80px;
+    width:100%;
+    height:4px;
+    background:red;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="score">점수 : 0</div>
+<div id="combo">콤보 : 0</div>
+
+<div id="gameArea">
+    <div id="judgeLine"></div>
+</div>
+
+<button id="startBtn">게임 시작</button>
+
+<script>
+
+const gameArea = document.getElementById("gameArea");
+const startBtn = document.getElementById("startBtn");
+
+const lanes = [25,125,225,325];
+
+let score = 0;
+let combo = 0;
+let spawnTimer;
+let notes = [];
+
+const judgeY = 520;
+
+function updateUI(){
+
+    document.getElementById("score").innerText =
+        "점수 : " + score;
+
+    document.getElementById("combo").innerText =
+        "콤보 : " + combo;
+
+}
+
+function createNote(){
+
+    const note = document.createElement("div");
+    note.className = "note";
+
+    const lane =
+        lanes[Math.floor(Math.random()*lanes.length)];
+
+    note.style.left = lane + "px";
+    note.style.top = "-50px";
+
+    note.dataset.y = -50;
+
+    gameArea.appendChild(note);
+
+    note.onclick = function(){
+
+        const y = Number(note.dataset.y);
+
+        const diff = Math.abs(judgeY - y);
+
+        if(diff < 20){
+
+            score += 300;
+            combo++;
+
+        }else if(diff < 40){
+
+            score += 150;
+            combo++;
+
+        }else{
+
+            combo = 0;
+
+        }
+
+        removeNote(note);
+        updateUI();
+
+    };
+
+    notes.push(note);
+
+}
+
+function removeNote(note){
+
+    if(note.parentNode){
+
+        note.parentNode.removeChild(note);
+
+    }
+
+    notes = notes.filter(n => n !== note);
+
+}
+
+function gameLoop(){
+
+    notes.forEach(note=>{
+
+        let y = Number(note.dataset.y);
+
+        y += 4;
+
+        note.dataset.y = y;
+        note.style.top = y + "px";
+
+        if(y > 600){
+
+            combo = 0;
+            updateUI();
+            removeNote(note);
+
+        }
+
+    });
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+function endGame(){
+
+    clearInterval(spawnTimer);
+
+    notes.forEach(note=>{
+
+        if(note.parentNode){
+
+            note.parentNode.removeChild(note);
+
+        }
+
+    });
+
+    notes = [];
+
+    startBtn.disabled = false;
+
+    alert("게임 종료!\n점수 : " + score);
+
+}
+
+function startGame(){
+
+    score = 0;
+    combo = 0;
+
+    updateUI();
+
+    startBtn.disabled = true;
+
+    spawnTimer = setInterval(createNote,700);
+
+    setTimeout(endGame,30000);
+
+}
+
+startBtn.onclick = startGame;
+
+requestAnimationFrame(gameLoop);
+
+</script>
+
+</body>
+</html>
