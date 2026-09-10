@@ -37,7 +37,10 @@ body{
   box-shadow:0 6px 0 #65545d,inset 0 0 0 3px rgba(255,255,255,.58);
 }
 .window{
-  position:absolute;left:18px;top:18px;width:122px;height:98px;
+  position:absolute;
+  z-index:12;
+  cursor:pointer;
+  touch-action:manipulation;left:18px;top:18px;width:122px;height:98px;
   background:linear-gradient(#aee5ff 0%,#dff5ff 64%,#f9fdff 100%);
   border:5px solid #fbfdff;
   border-radius:7px;
@@ -55,7 +58,7 @@ body{
 }
 .window:before{width:4px;height:100%;left:50%;top:0;transform:translateX(-2px)}
 .window:after{height:4px;width:100%;top:50%;left:0;transform:translateY(-2px)}
-.cloud{position:absolute;background:#fff;border-radius:20px;opacity:.8}
+.cloud{pointer-events:none;position:absolute;background:#fff;border-radius:20px;opacity:.8}
 .cl1{width:38px;height:13px;left:12px;top:18px}
 .cl2{width:45px;height:15px;right:8px;top:58px}
 .poster{
@@ -480,6 +483,32 @@ body{
   </div>
 </div>
 
+<div class="mini-overlay" id="miniOverlay">
+  <div class="mini-card">
+    <div class="mini-title">비밀 미니게임</div>
+    <div class="mini-desc">창문을 다섯 번 눌러 발견하셨네요!<br>10초 동안 반짝별을 최대한 많이 눌러 보세요.</div>
+
+    <div class="mini-scorebar">
+      <div class="mini-badge">점수 <span id="miniScore">0</span></div>
+      <div class="mini-badge">남은 시간 <span id="miniTime">10</span>초</div>
+      <div class="mini-badge" id="miniBestBox">최고 <span id="miniBest">0</span></div>
+    </div>
+
+    <div class="mini-playground" id="miniPlayground">
+      <div class="mini-moon"></div>
+      <div class="mini-cloud mc1"></div>
+      <div class="mini-cloud mc2"></div>
+      <div class="mini-cloud mc3"></div>
+    </div>
+
+    <div class="mini-buttons">
+      <button class="mini-btn" onclick="startMiniGame()">다시 하기</button>
+      <button class="mini-btn" onclick="closeMiniGame()">닫기</button>
+    </div>
+    <div class="secret-note">※ 실험과는 전혀 관련 없는 숨겨진 놀이입니다.</div>
+  </div>
+</div>
+
 <script>
 const well=document.getElementById('well');
 const liquid=document.getElementById('liquid');
@@ -806,32 +835,6 @@ function spawnStar(){
 }
 
 </script>
-
-<div class="mini-overlay" id="miniOverlay">
-  <div class="mini-card">
-    <div class="mini-title">비밀 미니게임</div>
-    <div class="mini-desc">창문을 다섯 번 눌러 발견하셨네요!<br>10초 동안 반짝별을 최대한 많이 눌러 보세요.</div>
-
-    <div class="mini-scorebar">
-      <div class="mini-badge">점수 <span id="miniScore">0</span></div>
-      <div class="mini-badge">남은 시간 <span id="miniTime">10</span>초</div>
-      <div class="mini-badge" id="miniBestBox">최고 <span id="miniBest">0</span></div>
-    </div>
-
-    <div class="mini-playground" id="miniPlayground">
-      <div class="mini-moon"></div>
-      <div class="mini-cloud mc1"></div>
-      <div class="mini-cloud mc2"></div>
-      <div class="mini-cloud mc3"></div>
-    </div>
-
-    <div class="mini-buttons">
-      <button class="mini-btn" onclick="startMiniGame()">다시 하기</button>
-      <button class="mini-btn" onclick="closeMiniGame()">닫기</button>
-    </div>
-    <div class="secret-note">※ 실험과는 전혀 관련 없는 숨겨진 놀이입니다.</div>
-  </div>
-</div>
 
 </body>
 </html>
