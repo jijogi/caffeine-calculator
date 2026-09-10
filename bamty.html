@@ -216,10 +216,37 @@ body{
   background:linear-gradient(#ddf5fb 0 67%,#dcc095 67% 100%);
 }
 .j-window{
-  position:absolute;left:14px;top:14px;width:92px;height:72px;background:#b9eaff;border:4px solid #fff;outline:2px solid #8fa5b0
+  position:absolute;
+  left:14px;top:14px;
+  width:92px;height:72px;
+  background:linear-gradient(#b9eaff 0%, #dff5ff 68%, #f9fdff 100%);
+  border:4px solid #fbfdff;
+  border-radius:6px;
+  box-shadow:
+    0 0 0 2px #8fa5b0,
+    inset 0 0 0 2px #c4dce6,
+    inset 0 0 8px rgba(255,255,255,.45);
 }
-.j-window:before,.j-window:after{content:"";position:absolute;background:#8fa5b0}
-.j-window:before{width:3px;height:100%;left:50%}.j-window:after{height:3px;width:100%;top:50%}
+.j-window:before,.j-window:after{
+  content:"";
+  position:absolute;
+  background:#8fa5b0;
+  box-shadow:0 0 0 1px rgba(255,255,255,.25);
+}
+.j-window:before{
+  width:3px;
+  height:calc(100% - 8px);
+  left:50%;
+  top:4px;
+  transform:translateX(-1.5px);
+}
+.j-window:after{
+  height:3px;
+  width:calc(100% - 8px);
+  left:4px;
+  top:50%;
+  transform:translateY(-1.5px);
+}
 .j-bench{position:absolute;left:0;right:0;bottom:0;height:62px;background:#c8a178;border-top:4px solid #987255}
 .j-well{
   position:absolute;left:50%;bottom:42px;transform:translateX(-50%);
