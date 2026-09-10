@@ -306,6 +306,71 @@ body{
 .hint-pop{display:none;margin-top:10px;text-align:left;background:#fff;border:2px dashed #d28aa7;border-radius:12px;padding:10px;font-size:11px;line-height:1.55;color:#5c4b53}
 .confetti{position:fixed;top:-20px;width:9px;height:15px;z-index:300;animation:conf 2.3s linear forwards}
 @keyframes conf{to{transform:translateY(110vh) rotate(760deg)}}
+
+/* hidden window-click mini game */
+.mini-overlay{
+  position:fixed; inset:0; background:rgba(49,37,49,.82); z-index:120;
+  display:none; align-items:center; justify-content:center; padding:18px;
+}
+.mini-card{
+  width:min(92vw,430px); background:#fff7e1; border:4px solid #7d5e6d; border-radius:24px;
+  box-shadow:0 8px 0 #493640, inset 0 0 0 3px rgba(255,255,255,.95); padding:14px; text-align:center;
+}
+.mini-title{font-size:22px;font-weight:900;color:#c85a89;margin:0 0 8px}
+.mini-desc{font-size:12px;line-height:1.5;color:#6b5962;margin-bottom:8px}
+.mini-playground{
+  position:relative; height:300px; overflow:hidden; border:3px solid #7b6772; border-radius:18px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.95) 0 2px, transparent 3px) 0 0/52px 52px,
+    radial-gradient(circle at 80% 18%, rgba(255,255,255,.8) 0 1.5px, transparent 2.5px) 0 0/70px 70px,
+    linear-gradient(180deg,#1d2c68 0%, #3f4ea3 55%, #89c7ff 100%);
+}
+.mini-moon{
+  position:absolute; right:24px; top:20px; width:42px; height:42px; border-radius:50%;
+  background:#fff8bd; box-shadow:0 0 12px rgba(255,248,189,.7);
+}
+.mini-cloud{
+  position:absolute; bottom:28px; width:72px; height:26px; border-radius:20px; background:#fff8;
+  filter:blur(.2px);
+}
+.mc1{left:20px}.mc2{left:110px;bottom:44px;width:58px}.mc3{right:24px}
+.mini-scorebar{
+  display:flex; justify-content:space-between; align-items:center; gap:8px;
+  margin:10px 0 8px; font-size:12px; font-weight:900; color:#6c5864;
+}
+.mini-badge{
+  background:#fff; border:2px solid #d7b4c2; border-radius:999px; padding:5px 9px;
+}
+.star{
+  position:absolute; width:34px; height:34px; cursor:pointer; user-select:none;
+  display:flex; align-items:center; justify-content:center; font-size:28px;
+  animation:starFloat linear forwards;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.18));
+}
+@keyframes starFloat{
+  from{transform:translateY(0) scale(.9)}
+  50%{transform:translateY(-6px) scale(1)}
+  to{transform:translateY(-12px) scale(1.04); opacity:.88}
+}
+.pop{
+  position:absolute; font-weight:900; color:#fff; text-shadow:0 2px 0 rgba(54,40,58,.45);
+  animation:popUp .55s ease forwards; pointer-events:none;
+}
+@keyframes popUp{
+  from{transform:translateY(0) scale(.6); opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(-18px) scale(1.08); opacity:0}
+}
+.mini-buttons{display:flex; gap:8px; justify-content:center; margin-top:10px}
+.mini-btn{
+  border:2px solid #755969; border-radius:12px; padding:9px 12px; font-weight:900; font-family:inherit;
+  box-shadow:0 3px 0 #674d5b; background:#fff; color:#563f49;
+}
+.mini-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #674d5b}
+.secret-note{
+  font-size:10px; color:#8b717c; margin-top:8px;
+}
+
 </style>
 </head>
 <body>
@@ -321,7 +386,7 @@ body{
   </div>
 
   <div class="lab">
-    <div class="window"><div class="cloud cl1"></div><div class="cloud cl2"></div></div>
+    <div class="window" id="secretWindow" title="창문을 톡톡 눌러 보세요"><div class="cloud cl1"></div><div class="cloud cl2"></div></div>
     <div class="poster"><b>ELISA 한마디!</b><br>포획하고 → 검출하고 → 발색으로 확인!</div>
     <div class="shelf"></div>
     <div class="bottle b1"></div><div class="bottle b2"></div><div class="bottle b3"></div>
@@ -608,6 +673,165 @@ function resetGame(){
   document.getElementById('judgeOverlay').style.display='none';
   document.getElementById('washOverlay').style.display='none';
 }
+
+/* secret window mini-game */
+let secretTapCount = 0;
+let secretTapTimer = null;
+
+let miniScore = 0;
+let miniBest = 0;
+let miniTimeLeft = 10;
+let miniGameTimer = null;
+let miniSpawnTimer = null;
+let miniRunning = false;
+
+const secretWindow = document.getElementById('secretWindow');
+const miniOverlay = document.getElementById('miniOverlay');
+const miniPlayground = document.getElementById('miniPlayground');
+const miniScoreEl = document.getElementById('miniScore');
+const miniTimeEl = document.getElementById('miniTime');
+const miniBestEl = document.getElementById('miniBest');
+
+if (secretWindow) {
+  secretWindow.addEventListener('click', () => {
+    secretTapCount += 1;
+    if (secretTapTimer) clearTimeout(secretTapTimer);
+    secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1800);
+
+    if (secretTapCount >= 5) {
+      secretTapCount = 0;
+      openMiniGame();
+    }
+  });
+}
+
+function openMiniGame(){
+  miniOverlay.style.display = 'flex';
+  startMiniGame();
+}
+
+function closeMiniGame(){
+  miniOverlay.style.display = 'none';
+  stopMiniGame();
+}
+
+function stopMiniGame(){
+  miniRunning = false;
+  if (miniGameTimer) clearInterval(miniGameTimer);
+  if (miniSpawnTimer) clearInterval(miniSpawnTimer);
+  miniGameTimer = null;
+  miniSpawnTimer = null;
+  clearStars();
+}
+
+function clearStars(){
+  [...miniPlayground.querySelectorAll('.star,.pop')].forEach(el => el.remove());
+}
+
+function startMiniGame(){
+  stopMiniGame();
+  miniRunning = true;
+  miniScore = 0;
+  miniTimeLeft = 10;
+  updateMiniHud();
+
+  spawnStar();
+  miniSpawnTimer = setInterval(spawnStar, 520);
+  miniGameTimer = setInterval(() => {
+    miniTimeLeft -= 1;
+    updateMiniHud();
+    if (miniTimeLeft <= 0) finishMiniGame();
+  }, 1000);
+}
+
+function updateMiniHud(){
+  miniScoreEl.textContent = miniScore;
+  miniTimeEl.textContent = miniTimeLeft;
+  miniBestEl.textContent = miniBest;
+}
+
+function finishMiniGame(){
+  stopMiniGame();
+  if (miniScore > miniBest) miniBest = miniScore;
+  updateMiniHud();
+
+  const pop = document.createElement('div');
+  pop.className = 'pop';
+  pop.style.left = '50%';
+  pop.style.top = '46%';
+  pop.style.transform = 'translate(-50%,-50%)';
+  pop.style.fontSize = '20px';
+  pop.innerHTML = miniScore >= 12 ? '대단해요! ★' : (miniScore >= 7 ? '오, 제법인데요!' : '한 번 더 도전!');
+  miniPlayground.appendChild(pop);
+
+  setTimeout(() => {
+    if (miniOverlay.style.display === 'flex') startMiniGame();
+  }, 1400);
+}
+
+function spawnStar(){
+  if (!miniRunning) return;
+  const star = document.createElement('button');
+  star.type = 'button';
+  star.className = 'star';
+  star.textContent = Math.random() < 0.85 ? '⭐' : '🌟';
+  const maxX = miniPlayground.clientWidth - 38;
+  const maxY = miniPlayground.clientHeight - 50;
+  const x = Math.max(6, Math.random() * maxX);
+  const y = Math.max(18, Math.random() * maxY);
+  const duration = 1100 + Math.random() * 900;
+  star.style.left = x + 'px';
+  star.style.top = y + 'px';
+  star.style.animationDuration = duration + 'ms';
+
+  star.addEventListener('click', () => {
+    if (!miniRunning) return;
+    miniScore += 1;
+    if (miniScore > miniBest) miniBest = miniScore;
+    updateMiniHud();
+
+    const p = document.createElement('div');
+    p.className = 'pop';
+    p.textContent = '+1';
+    p.style.left = (x + 8) + 'px';
+    p.style.top = (y - 4) + 'px';
+    miniPlayground.appendChild(p);
+    setTimeout(() => p.remove(), 560);
+
+    star.remove();
+  });
+
+  miniPlayground.appendChild(star);
+  setTimeout(() => { if (star.isConnected) star.remove(); }, duration + 80);
+}
+
 </script>
+
+<div class="mini-overlay" id="miniOverlay">
+  <div class="mini-card">
+    <div class="mini-title">비밀 미니게임</div>
+    <div class="mini-desc">창문을 다섯 번 눌러 발견하셨네요!<br>10초 동안 반짝별을 최대한 많이 눌러 보세요.</div>
+
+    <div class="mini-scorebar">
+      <div class="mini-badge">점수 <span id="miniScore">0</span></div>
+      <div class="mini-badge">남은 시간 <span id="miniTime">10</span>초</div>
+      <div class="mini-badge" id="miniBestBox">최고 <span id="miniBest">0</span></div>
+    </div>
+
+    <div class="mini-playground" id="miniPlayground">
+      <div class="mini-moon"></div>
+      <div class="mini-cloud mc1"></div>
+      <div class="mini-cloud mc2"></div>
+      <div class="mini-cloud mc3"></div>
+    </div>
+
+    <div class="mini-buttons">
+      <button class="mini-btn" onclick="startMiniGame()">다시 하기</button>
+      <button class="mini-btn" onclick="closeMiniGame()">닫기</button>
+    </div>
+    <div class="secret-note">※ 실험과는 전혀 관련 없는 숨겨진 놀이입니다.</div>
+  </div>
+</div>
+
 </body>
 </html>
