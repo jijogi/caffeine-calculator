@@ -3,160 +3,584 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#f8bfd8">
-<title>두근두근! ELISA 연구실</title>
+<title>ELISA 연구실</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--ink:#513a4b;--pink:#f39abd;--cream:#fff7d9}
-html,body{margin:0;min-height:100%;font-family:"Malgun Gothic","Apple SD Gothic Neo","Gulim",sans-serif;color:var(--ink)}
-body{background:radial-gradient(circle at 10px 10px,#ffffff80 2px,transparent 3px) 0 0/26px 26px,linear-gradient(#f9c4da,#d8ecff 55%,#fff3c8);min-height:100svh;overflow-x:hidden}
-.game-shell{width:min(100%,500px);margin:auto;min-height:100svh;position:relative;padding:10px 10px 22px}
-.header{background:linear-gradient(#fff9fb,#ffd1e3);border:3px solid #9d6d86;border-radius:18px;box-shadow:0 4px 0 #7d5369,inset 0 2px 0 white;padding:8px 10px;text-align:center;position:relative}
-.title{font-weight:900;font-size:22px;color:#d54f89;text-shadow:1px 1px #fff,2px 2px #84556c}
-.subtitle{font-size:11px;margin-top:2px;color:#775868}
-.badge{position:absolute;right:7px;top:7px;background:#fff4a9;border:2px solid #a98647;border-radius:10px;padding:2px 6px;font-size:10px;font-weight:800;transform:rotate(5deg)}
-.mission{margin:9px 2px 8px;background:#fffdf2;border:2px dashed #c8849f;border-radius:14px;padding:8px 10px;font-size:12px;line-height:1.45;text-align:center;box-shadow:0 2px 0 #ffffffaa}
-.lab{height:420px;position:relative;overflow:hidden;border:4px solid #7d6b75;border-radius:18px;background:linear-gradient(#d8f2fb 0 61%,#eed7ba 61% 64%,#d6b98f 64% 100%);box-shadow:0 5px 0 #624f59,inset 0 0 0 3px #ffffff80}
-.window{position:absolute;left:18px;top:17px;width:115px;height:92px;background:linear-gradient(#aee6ff,#f6fbff);border:5px solid #fff;outline:3px solid #8194a0;box-shadow:inset 0 0 0 2px #bdd4dd}
-.window:before,.window:after{content:"";position:absolute;background:#8194a0}.window:before{width:4px;height:100%;left:50%}.window:after{height:4px;width:100%;top:50%}
-.poster{position:absolute;right:17px;top:16px;width:118px;background:#fff6c9;border:2px solid #9a8062;padding:6px 4px;text-align:center;font-size:10px;transform:rotate(1.5deg);box-shadow:2px 3px #8d735655}.poster b{color:#d0507b;font-size:12px}
-.shelf{position:absolute;right:18px;top:90px;width:118px;height:8px;background:#94765e;border-bottom:4px solid #6a5041}
-.bottle{position:absolute;width:24px;height:39px;background:#fbfbfb;border:2px solid #6b5960;border-radius:3px 3px 7px 7px;top:51px}.bottle:before{content:"";position:absolute;width:14px;height:8px;left:3px;top:-9px;background:#5b4d52;border:2px solid #453a3f}.b1{right:88px}.b2{right:55px}.b3{right:22px}.b1:after,.b2:after,.b3:after{content:"";position:absolute;left:3px;right:3px;top:13px;height:10px;border-radius:2px}.b1:after{background:#ff9fbf}.b2:after{background:#aee9da}.b3:after{background:#ffd36f}
-.bench{position:absolute;left:0;right:0;bottom:0;height:147px;background:linear-gradient(#d8bb93,#c29c71);border-top:5px solid #8f6c4f}
-.well{position:absolute;left:50%;bottom:73px;transform:translateX(-50%);width:260px;height:190px;border:7px solid #6a7d88;border-top:0;border-radius:0 0 40px 40px;background:rgba(222,247,255,.75);overflow:hidden;box-shadow:inset 0 -10px 20px #78909c30,0 5px 0 #6a504044;z-index:4}
-.well-rim{position:absolute;left:50%;bottom:251px;transform:translateX(-50%);width:276px;height:13px;border-radius:50%;background:#dff8ff;border:4px solid #6a7d88;z-index:7}
-.liquid{position:absolute;left:0;right:0;bottom:0;height:72%;background:rgba(156,220,245,.28);transition:background .7s}.well-floor{position:absolute;left:0;right:0;bottom:0;height:14px;background:#b9d8e4}
-.caption{position:absolute;left:50%;top:122px;transform:translateX(-50%);z-index:8;width:88%;background:#fffdf7;border:2px solid #9e7184;border-radius:14px;padding:6px 8px;text-align:center;font-size:11px;font-weight:700;box-shadow:0 3px 0 #9e718440}
-.drop{position:absolute;z-index:6;animation:fall .75s cubic-bezier(.22,.84,.45,1) forwards}
-@keyframes fall{0%{transform:translateY(-250px) rotate(-20deg);opacity:0}15%{opacity:1}80%{transform:translateY(6px) rotate(8deg)}100%{transform:translateY(0) rotate(0)}}
-.capture{width:34px;height:55px}.capture:before,.capture:after,.detect:before,.detect:after{content:"";position:absolute;top:0;width:7px;border-radius:8px;transform-origin:bottom center}.capture:before,.capture:after{height:38px;background:#188cc6}.capture:before{left:6px;transform:rotate(-38deg)}.capture:after{right:6px;transform:rotate(38deg)}
-.stem{position:absolute;left:13px;bottom:0;width:8px;height:28px;background:#188cc6;border-radius:6px}
-.antigen{width:25px;height:19px;background:#777;border-radius:58% 42% 55% 45%;box-shadow:4px 3px 0 #999}.blocker{width:19px;height:15px;background:#a0a0a0;border-radius:50%}
-.detect{width:30px;height:45px}.detect:before,.detect:after{height:31px;background:#e75099}.detect:before{left:5px;transform:rotate(-38deg)}.detect:after{right:5px;transform:rotate(38deg)}.detect .stem{left:11px;height:22px;width:7px;background:#e75099}
-.hrp{width:22px;height:22px;background:#ffb12f;border:2px solid #a96500;border-radius:50%;font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#7b4900}
-.float{animation:floaty 1.7s ease-in-out infinite alternate}@keyframes floaty{to{transform:translateY(-7px) rotate(5deg)}}
-.wash-wave{position:absolute;left:-30%;top:20px;width:160%;height:55px;background:#74d9ff99;border-radius:45%;z-index:20;animation:wash 1s ease-in-out forwards}@keyframes wash{0%{transform:translateY(-120px) rotate(-5deg)}55%{transform:translateY(80px) rotate(4deg)}100%{transform:translateY(250px);opacity:0}}
-.wash-away{animation:away .75s ease-in forwards!important}@keyframes away{to{transform:translate(120px,-170px) rotate(180deg);opacity:0}}
-.controls-title{text-align:center;font-size:13px;font-weight:900;margin:11px 0 7px;color:#86576e}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.game-btn{border:2px solid #7e6271;border-radius:14px;padding:8px 3px 6px;min-height:68px;box-shadow:0 4px 0 #755565,inset 0 2px 0 #fff9;position:relative;overflow:hidden;font-family:inherit;font-weight:900;font-size:11px;color:#573b49;touch-action:manipulation}
-.game-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #755565}.game-btn .ico{display:block;font-size:22px;margin-bottom:3px;filter:drop-shadow(1px 2px 0 #fff7)}
-.c1{background:linear-gradient(#ddf5ff,#a9ddf5)}.c2{background:linear-gradient(#f5f5f5,#d8d2d5)}.c3{background:linear-gradient(#fff0bd,#ffd381)}.c4{background:linear-gradient(#d6f7ff,#99e0f0)}.c5{background:linear-gradient(#ffe0ef,#f7afd0)}.c6{background:linear-gradient(#ffe2bb,#ffc477)}.c7{background:linear-gradient(#fff9bc,#ffe760)}.c8{background:linear-gradient(#ffd6da,#ff9fac)}
-.actionbar{display:grid;grid-template-columns:1.3fr .9fr .9fr;gap:7px;margin-top:9px}.action{border:2px solid #6f5965;border-radius:14px;padding:10px 4px;font-family:inherit;font-weight:900;box-shadow:0 4px 0 #654d5a,inset 0 2px #fff8;font-size:12px}.read{background:linear-gradient(#bcf5ad,#70cf6b)}.hint{background:linear-gradient(#fff1a2,#f6cf57)}.reset{background:linear-gradient(#e6dbef,#baa8cf)}
-.progress{margin-top:10px;height:14px;border:2px solid #8c6e7e;border-radius:10px;background:#fff;overflow:hidden}.progress>div{height:100%;width:0;background:repeating-linear-gradient(45deg,#f192bb 0 8px,#ffd5e6 8px 16px);transition:width .3s}
-.status{text-align:center;font-size:11px;margin-top:5px;min-height:17px;font-weight:700}
-.start-overlay,.judge-overlay{position:fixed;inset:0;background:#4c3651cc;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}
-.start-card,.judge-card{width:min(92vw,420px);background:#fff6dd;border:4px solid #7d5c6b;border-radius:22px;box-shadow:0 8px 0 #46323b,inset 0 0 0 3px white;padding:16px;text-align:center}
-.start-card h2{margin:0 0 6px;color:#d34f88;text-shadow:1px 2px #fff}.start-illustration{font-size:52px;margin:8px}.start-card p{font-size:13px;line-height:1.55}
-.start-btn{border:3px solid #7d5b6c;border-radius:16px;background:linear-gradient(#ffcedf,#f187b0);box-shadow:0 5px 0 #754e61;padding:12px 28px;font-weight:900;font-size:16px;color:#65394e}.start-btn:active{transform:translateY(4px);box-shadow:0 1px 0 #754e61}
-.tip{margin-top:10px;background:white;border:2px dashed #d39ab0;border-radius:12px;padding:8px;font-size:11px}
-.judge-overlay{display:none;background:#3c2e40dd}
-.door{position:absolute;left:0;top:0;width:100%;height:100%;background:#866376;transform-origin:left center;animation:dooropen .7s forwards;z-index:2}@keyframes dooropen{to{transform:perspective(600px) rotateY(-82deg)}}
-.prof-scene{position:relative;height:230px;overflow:hidden;background:linear-gradient(#daf2f9 0 67%,#d9ba90 67%);border:3px solid #765b67;border-radius:14px}
-.prof{position:absolute;bottom:7px;left:-120px;width:100px;height:180px;animation:walkin 1.5s .35s ease-out forwards}@keyframes walkin{0%{left:-120px;transform:rotate(-5deg)}70%{left:50%;transform:translateX(-50%) rotate(3deg)}100%{left:50%;transform:translateX(-50%)}}
-.head{position:absolute;left:22px;top:2px;width:58px;height:65px;background:#ffd9bd;border:3px solid #6b4c48;border-radius:45%}.hair{position:absolute;left:2px;right:2px;top:-2px;height:22px;background:#443637;border-radius:50% 50% 30% 30%}.eye{position:absolute;top:29px;width:5px;height:5px;background:#33272b;border-radius:50%}.e1{left:15px}.e2{right:15px}.glass{position:absolute;top:23px;width:22px;height:17px;border:2px solid #493f42;border-radius:5px}.g1{left:5px}.g2{right:5px}.bridge{position:absolute;top:30px;left:26px;width:7px;height:2px;background:#493f42}.mouth{position:absolute;left:19px;top:48px;width:20px;height:7px;border-bottom:3px solid #a14c56;border-radius:50%}
-.body{position:absolute;left:10px;top:62px;width:82px;height:104px;background:#fff;border:3px solid #6a6064;border-radius:18px 18px 7px 7px}.tie{position:absolute;left:46px;top:70px;width:10px;height:50px;background:#c85065;clip-path:polygon(50% 0,100% 20%,65% 100%,35% 100%,0 20%)}.arm{position:absolute;width:17px;height:75px;background:#fff;border:3px solid #6a6064;top:75px;border-radius:10px;transform-origin:top}.a1{left:5px;transform:rotate(15deg)}.a2{right:3px;transform:rotate(-28deg)}
-.inspect{animation:inspect .9s 1.95s ease-in-out forwards}@keyframes inspect{0%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(18px) rotate(7deg)}100%{transform:translateX(-50%) translateY(9px)}}
-.bubble{opacity:0;position:absolute;right:9px;top:13px;width:180px;background:white;border:3px solid #6f5361;border-radius:18px;padding:8px;font-size:12px;font-weight:900;line-height:1.4;animation:bubble .45s 2.8s forwards}.bubble:after{content:"";position:absolute;left:-16px;bottom:18px;border:9px solid transparent;border-right-color:#6f5361}@keyframes bubble{to{opacity:1}}
-.result-title{font-size:19px;font-weight:900;margin:10px 0 3px}.bad{color:#d43258}.good{color:#2e9862}.result-text{font-size:12px;line-height:1.5}
-.judge-buttons{display:flex;gap:8px;justify-content:center;margin-top:10px}.smallbtn{border:2px solid #755969;border-radius:12px;padding:8px 12px;font-weight:900;font-family:inherit;box-shadow:0 3px #674d5b;background:#fff}
-.hint-pop{display:none;margin-top:9px;text-align:left;background:#fff;border:2px dashed #d28aa7;border-radius:12px;padding:9px;font-size:11px;line-height:1.5}
-.confetti{position:fixed;top:-20px;width:9px;height:15px;z-index:300;animation:conf 2.3s linear forwards}@keyframes conf{to{transform:translateY(110vh) rotate(760deg)}}
+html,body{
+  margin:0;min-height:100%;
+  font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  color:#574b58;
+}
+body{
+  background:
+    radial-gradient(circle at 18px 18px,rgba(255,255,255,.55) 0 2px,transparent 3px) 0 0/30px 30px,
+    linear-gradient(180deg,#f8dbe8 0%,#e6f2ff 56%,#fff5d9 100%);
+  min-height:100svh;overflow-x:hidden;
+}
+.game-shell{width:min(100%,520px);margin:auto;padding:12px 12px 24px;min-height:100svh}
+.header{
+  background:linear-gradient(#fffafd,#ffe0ec);
+  border:3px solid #a98095;border-radius:20px;
+  box-shadow:0 5px 0 #86677a,inset 0 2px 0 #fff;
+  padding:12px;text-align:center;
+}
+.title{font-size:24px;font-weight:900;color:#c85a89;text-shadow:1px 1px #fff,2px 2px rgba(133,93,114,.18)}
+.subtitle{font-size:11px;margin-top:4px;color:#7f6470}
+.mission{
+  margin:10px 2px;background:#fffdf5;border:2px dashed #d09ab2;border-radius:16px;
+  padding:10px 12px;font-size:12px;line-height:1.5;text-align:center;
+}
+.lab{
+  height:450px;position:relative;overflow:hidden;
+  border:4px solid #7c6d77;border-radius:22px;
+  background:linear-gradient(180deg,#dff5fb 0 60%,#f1dec2 60% 64%,#d9bb92 64% 100%);
+  box-shadow:0 6px 0 #65545d,inset 0 0 0 3px rgba(255,255,255,.58);
+}
+.window{
+  position:absolute;left:18px;top:18px;width:122px;height:98px;
+  background:linear-gradient(#aee5ff 0%,#dff5ff 64%,#f9fdff 100%);
+  border:5px solid #fbfdff;
+  border-radius:7px;
+  box-shadow:
+    0 0 0 3px #8ea4af,
+    0 4px 0 rgba(87,108,118,.16),
+    inset 0 0 0 2px #c4dce6,
+    inset 0 0 10px rgba(255,255,255,.5);
+}
+.window:before,.window:after{
+  content:"";
+  position:absolute;
+  background:#91a6b0;
+  box-shadow:0 0 0 1px rgba(255,255,255,.35);
+}
+.window:before{width:4px;height:100%;left:50%;top:0;transform:translateX(-2px)}
+.window:after{height:4px;width:100%;top:50%;left:0;transform:translateY(-2px)}
+.cloud{position:absolute;background:#fff;border-radius:20px;opacity:.8}
+.cl1{width:38px;height:13px;left:12px;top:18px}
+.cl2{width:45px;height:15px;right:8px;top:58px}
+.poster{
+  position:absolute;right:18px;top:18px;width:128px;background:#fff8d8;border:2px solid #a68a6f;border-radius:8px;
+  padding:7px 6px;text-align:center;font-size:10px;line-height:1.35;box-shadow:2px 3px 0 rgba(118,91,67,.35);transform:rotate(1.2deg)
+}
+.poster b{font-size:12px;color:#c85a89}
+.shelf{position:absolute;right:16px;top:95px;width:132px;height:8px;background:#9b7b61;border-bottom:4px solid #705344;border-radius:3px}
+.bottle{position:absolute;width:24px;height:40px;background:#fcfcfc;border:2px solid #66565c;border-radius:4px 4px 8px 8px;top:55px}
+.bottle:before{content:"";position:absolute;width:14px;height:8px;left:3px;top:-9px;background:#5c4d52;border:2px solid #473c40;border-radius:3px 3px 0 0}
+.bottle:after{content:"";position:absolute;left:3px;right:3px;top:14px;height:10px;border-radius:3px}
+.b1{right:97px}.b2{right:59px}.b3{right:21px}
+.b1:after{background:#ffb4ce}.b2:after{background:#b7efe0}.b3:after{background:#ffe085}
+.bench{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(#d9bd95,#c8a178);border-top:5px solid #967252}
+.caption{
+  position:absolute;left:50%;top:125px;transform:translateX(-50%);width:89%;z-index:9;
+  background:#fffdf8;border:2px solid #a58292;border-radius:16px;padding:7px 10px;
+  text-align:center;font-size:11px;font-weight:700;box-shadow:0 3px 0 rgba(154,118,136,.32)
+}
+
+/* refined well */
+.well-wrap{
+  position:absolute;left:50%;bottom:74px;transform:translateX(-50%);width:306px;height:220px;z-index:5;
+}
+.well-rim-back{
+  position:absolute;left:8px;top:0;width:290px;height:24px;border-radius:50%;
+  background:linear-gradient(#eefcff,#cce9f2);border:5px solid #738995;z-index:2;
+}
+.well-body{
+  position:absolute;left:15px;top:10px;width:276px;height:194px;
+  border-left:7px solid #738995;border-right:7px solid #738995;border-bottom:7px solid #738995;
+  border-radius:0 0 44px 44px;
+  background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(221,245,252,.5) 24%,rgba(205,235,246,.55) 75%,rgba(255,255,255,.38));
+  overflow:hidden;box-shadow:inset 0 -12px 22px rgba(74,107,123,.13),0 5px 0 rgba(100,79,88,.38);
+}
+.well-rim-front{
+  position:absolute;left:8px;top:0;width:290px;height:24px;border-radius:50%;
+  border:5px solid #738995;border-top-color:#9db1ba;border-bottom-color:#687e8a;
+  background:transparent;z-index:7;pointer-events:none;
+}
+.liquid{
+  position:absolute;left:0;right:0;bottom:0;height:72%;
+  background:linear-gradient(180deg,rgba(178,229,249,.35),rgba(137,209,239,.38));
+  transition:background .65s ease;
+}
+.liquid:before{
+  content:"";position:absolute;left:5%;top:-7px;width:90%;height:14px;border-radius:50%;
+  background:rgba(215,244,255,.72);border:1px solid rgba(112,166,190,.35);
+}
+.well-floor{position:absolute;left:0;right:0;bottom:0;height:14px;background:#b7d7e4}
+.reflection{position:absolute;left:18px;top:24px;width:32px;height:118px;border-radius:20px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.04))}
+.drop{position:absolute;z-index:6;animation:fall .8s cubic-bezier(.22,.84,.45,1) forwards}
+@keyframes fall{
+  0%{transform:translateY(-240px) rotate(-16deg);opacity:0}
+  12%{opacity:1}
+  82%{transform:translateY(7px) rotate(5deg)}
+  100%{transform:translateY(0) rotate(0)}
+}
+.capture{width:34px;height:56px}
+.capture:before,.capture:after,.detect:before,.detect:after{content:"";position:absolute;top:0;width:7px;border-radius:8px;transform-origin:bottom center}
+.capture:before,.capture:after{height:39px;background:#1b8fc8}
+.capture:before{left:6px;transform:rotate(-38deg)}.capture:after{right:6px;transform:rotate(38deg)}
+.stem{position:absolute;left:13px;bottom:0;width:8px;height:28px;border-radius:7px;background:#1b8fc8}
+.antigen{width:26px;height:20px;background:#7b7b7b;border-radius:58% 42% 55% 45%;box-shadow:4px 3px 0 #9e9e9e}
+.blocker{width:20px;height:15px;background:#aaa;border-radius:50%}
+.detect{width:30px;height:46px}
+.detect:before,.detect:after{height:31px;background:#e5519d}
+.detect:before{left:5px;transform:rotate(-38deg)}.detect:after{right:5px;transform:rotate(38deg)}
+.detect .stem{left:11px;height:22px;width:7px;background:#e5519d}
+.hrp{width:22px;height:22px;background:#ffb234;border:2px solid #a96800;border-radius:50%;font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#7c4900}
+.float{animation:floaty 1.7s ease-in-out infinite alternate}
+@keyframes floaty{to{transform:translateY(-7px) rotate(5deg)}}
+.wash-away{animation:away .65s ease-in forwards!important}
+@keyframes away{to{transform:translate(80px,-120px) rotate(160deg);opacity:0}}
+
+.controls-title{text-align:center;font-size:13px;font-weight:900;margin:12px 0 8px;color:#7e5e6c}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.game-btn{
+  border:2px solid #806674;border-radius:16px;min-height:78px;padding:7px 4px 6px;
+  box-shadow:0 4px 0 #6f5562,inset 0 2px 0 rgba(255,255,255,.72);
+  font-family:inherit;font-weight:900;color:#5a3f4c;background:#fff
+}
+.game-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #6f5562}
+.game-btn .ico{display:block;font-size:22px;margin-bottom:3px}
+.game-btn .main{display:block;font-size:11px;line-height:1.15}
+.game-btn .sub{display:block;margin-top:2px;font-size:9px;font-weight:700;color:#7d6570;line-height:1.1}
+.c1{background:linear-gradient(#dff5ff,#aeddff)}.c2{background:linear-gradient(#f7f7f7,#dfdadd)}.c3{background:linear-gradient(#fff2c9,#ffd78a)}.c4{background:linear-gradient(#d7f7ff,#a1e5f4)}
+.c5{background:linear-gradient(#ffe2f0,#f7b9d6)}.c6{background:linear-gradient(#ffe5c3,#ffc985)}.c7{background:linear-gradient(#fff9c3,#ffe76c)}.c8{background:linear-gradient(#ffdbe1,#ffa8b8)}
+.actionbar{display:grid;grid-template-columns:1.3fr .95fr .95fr;gap:8px;margin-top:10px}
+.action{border:2px solid #705964;border-radius:16px;padding:11px 4px;font-family:inherit;font-weight:900;font-size:12px;color:#563f49;box-shadow:0 4px 0 #644d58,inset 0 2px 0 rgba(255,255,255,.7)}
+.action:active{transform:translateY(3px);box-shadow:0 1px 0 #644d58}
+.read{background:linear-gradient(#c8f5ba,#7bd271)}.hint{background:linear-gradient(#fff3b5,#f4d66b)}.reset{background:linear-gradient(#ece3f4,#c2b1d4)}
+.progress{margin-top:10px;height:14px;border:2px solid #8b6c7b;border-radius:10px;background:#fff;overflow:hidden}
+.progress>div{height:100%;width:0;background:repeating-linear-gradient(45deg,#f19ac1 0 8px,#ffd7e6 8px 16px);transition:width .3s}
+.status{text-align:center;font-size:11px;font-weight:700;color:#6d5860;margin-top:6px;min-height:17px}
+.footer-note{text-align:center;font-size:10px;color:#8a6d79;margin-top:10px}
+
+/* overlays */
+.start-overlay,.wash-overlay,.judge-overlay{
+  position:fixed;inset:0;background:rgba(71,52,64,.78);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+}
+.wash-overlay,.judge-overlay{display:none}
+.card{
+  width:min(92vw,430px);background:#fff7e1;border:4px solid #7d5e6d;border-radius:24px;
+  box-shadow:0 8px 0 #493640,inset 0 0 0 3px rgba(255,255,255,.95);padding:16px;text-align:center;
+}
+.start-card h2,.wash-card h2{margin:0 0 8px;color:#c85a89}
+.start-illustration{font-size:50px;margin:8px}
+.start-card p{font-size:13px;line-height:1.6;margin:0}
+.tip{margin-top:10px;background:#fff;border:2px dashed #d4a0b4;border-radius:12px;padding:9px;font-size:11px;line-height:1.5}
+.start-btn{margin-top:12px;border:3px solid #7c5d6c;border-radius:16px;background:linear-gradient(#ffd4e3,#f08bb5);box-shadow:0 5px 0 #734e61;padding:12px 28px;font-weight:900;font-size:16px;color:#663b4d}
+
+/* wash mini animation */
+.wash-scene{
+  position:relative;height:250px;overflow:hidden;border:3px solid #7b6772;border-radius:16px;
+  background:linear-gradient(#dff5fb 0 68%,#d5b98f 68% 100%);
+}
+.paper{
+  position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+  width:190px;height:48px;background:
+  repeating-linear-gradient(0deg,#fff 0 5px,#f3f3f3 5px 7px);
+  border:3px solid #c9c9c9;border-radius:8px;box-shadow:0 4px rgba(0,0,0,.12);
+}
+.paper:after{content:"흡수지";position:absolute;right:7px;bottom:4px;font-size:9px;color:#999}
+.wash-plate{
+  position:absolute;left:50%;top:32px;width:130px;height:92px;transform:translateX(-50%);
+  animation:tapPlate 1.45s .25s ease-in-out forwards;
+}
+.wp-rim{position:absolute;left:0;top:0;width:130px;height:16px;border-radius:50%;background:#e5fbff;border:4px solid #708690;z-index:4}
+.wp-body{position:absolute;left:6px;top:8px;width:118px;height:78px;border:5px solid #708690;border-top:0;border-radius:0 0 22px 22px;background:#e9f9ff;overflow:hidden}
+.wp-liquid{position:absolute;left:0;right:0;bottom:0;height:58%;background:#99dff3aa}
+@keyframes tapPlate{
+  0%{transform:translateX(-50%) rotate(0) translateY(0)}
+  30%{transform:translateX(-50%) rotate(145deg) translateY(-5px)}
+  44%{transform:translateX(-50%) rotate(155deg) translateY(45px)}
+  52%{transform:translateX(-50%) rotate(150deg) translateY(26px)}
+  63%{transform:translateX(-50%) rotate(156deg) translateY(48px)}
+  76%{transform:translateX(-50%) rotate(150deg) translateY(30px)}
+  100%{transform:translateX(-50%) rotate(0) translateY(0)}
+}
+.splash{
+  position:absolute;left:50%;bottom:62px;transform:translateX(-50%);
+  font-size:25px;opacity:0;animation:splash .8s .75s ease forwards
+}
+@keyframes splash{0%{opacity:0;transform:translateX(-50%) scale(.5)}35%{opacity:1;transform:translateX(-50%) scale(1.2)}100%{opacity:0;transform:translateX(-50%) scale(1.6)}}
+.taptext{
+  position:absolute;left:50%;bottom:82px;transform:translateX(-50%);
+  font-size:24px;font-weight:900;color:#5e9dbb;text-shadow:2px 2px #fff;
+  opacity:0;animation:tapTxt 1s .72s ease forwards
+}
+@keyframes tapTxt{0%{opacity:0;transform:translateX(-50%) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(1.2)}}
+.wash-note{font-size:11px;margin-top:10px;color:#6c5962}
+
+/* professor animation */
+.judge-scene{
+  position:relative;height:260px;overflow:hidden;border:3px solid #765c67;border-radius:16px;
+  background:linear-gradient(#ddf5fb 0 67%,#dcc095 67% 100%);
+}
+.j-window{
+  position:absolute;left:14px;top:14px;width:92px;height:72px;background:#b9eaff;border:4px solid #fff;outline:2px solid #8fa5b0
+}
+.j-window:before,.j-window:after{content:"";position:absolute;background:#8fa5b0}
+.j-window:before{width:3px;height:100%;left:50%}.j-window:after{height:3px;width:100%;top:50%}
+.j-bench{position:absolute;left:0;right:0;bottom:0;height:62px;background:#c8a178;border-top:4px solid #987255}
+.j-well{
+  position:absolute;left:50%;bottom:42px;transform:translateX(-50%);
+  width:125px;height:62px;border:4px solid #708692;border-top:0;border-radius:0 0 18px 18px;background:#effaff;overflow:hidden
+}
+.j-well:before{content:"";position:absolute;left:-4px;top:-4px;width:125px;height:9px;border-radius:50%;border:4px solid #708692;background:#e7fbff}
+.j-liquid{position:absolute;left:0;right:0;bottom:0;height:56%;background:#ffdb64}
+.prof{
+  position:absolute;left:50%;bottom:8px;width:105px;height:184px;
+  transform:translateX(-50%) translateY(210px);opacity:0;
+}
+.prof.enter{animation:profEnter .8s ease-out forwards}
+@keyframes profEnter{
+  from{transform:translateX(-50%) translateY(210px);opacity:0}
+  to{transform:translateX(-50%) translateY(0);opacity:1}
+}
+.prof.arrived{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+.prof.arrived.inspect{animation:profInspect .8s ease-in-out forwards}
+@keyframes profInspect{
+  0%{transform:translateX(-50%) translateY(0) rotate(0);opacity:1}
+  50%{transform:translateX(-50%) translateY(13px) rotate(7deg);opacity:1}
+  100%{transform:translateX(-50%) translateY(7px) rotate(2deg);opacity:1}
+}
+.head{position:absolute;left:23px;top:2px;width:58px;height:66px;background:#ffd9bd;border:3px solid #6d4e49;border-radius:45%}
+.hair{position:absolute;left:2px;right:2px;top:-2px;height:22px;background:#443738;border-radius:50% 50% 30% 30%}
+.eye{position:absolute;top:29px;width:5px;height:5px;background:#33272b;border-radius:50%}.e1{left:15px}.e2{right:15px}
+.glass{position:absolute;top:23px;width:22px;height:17px;border:2px solid #4a4043;border-radius:5px}.g1{left:5px}.g2{right:5px}
+.bridge{position:absolute;top:30px;left:26px;width:7px;height:2px;background:#4a4043}
+.mouth{position:absolute;left:19px;top:48px;width:20px;height:7px;border-bottom:3px solid #a14c56;border-radius:50%}
+.body{position:absolute;left:10px;top:62px;width:82px;height:104px;background:#fff;border:3px solid #6a6064;border-radius:18px 18px 7px 7px}
+.tie{position:absolute;left:46px;top:70px;width:10px;height:50px;background:#c85065;clip-path:polygon(50% 0,100% 20%,65% 100%,35% 100%,0 20%)}
+.arm{position:absolute;width:17px;height:75px;background:#fff;border:3px solid #6a6064;top:75px;border-radius:10px;transform-origin:top}
+.a1{left:5px;transform:rotate(15deg)}.a2{right:3px;transform:rotate(-28deg)}
+.prof.pout .mouth{border-bottom:none;border-top:3px solid #9e4c58;top:51px;width:18px}
+.prof.pout .a1{transform:rotate(-25deg)}.prof.pout .a2{transform:rotate(25deg)}
+.prof.arrived.pout{
+  opacity:1;
+  animation:poutShake .5s ease-in-out 2 forwards;
+}
+@keyframes poutShake{
+  0%,100%{transform:translateX(-50%) translateY(7px) rotate(2deg);opacity:1}
+  50%{transform:translateX(calc(-50% - 7px)) translateY(7px) rotate(-3deg);opacity:1}
+}
+.bubble{
+  position:absolute;right:10px;top:12px;width:190px;background:#fff;border:3px solid #725765;border-radius:18px;
+  padding:9px;font-size:12px;font-weight:900;line-height:1.45;opacity:0;
+}
+.bubble.show{animation:bubbleIn .35s ease forwards}
+@keyframes bubbleIn{to{opacity:1}}
+.result-title{font-size:20px;font-weight:900;margin:11px 0 4px}.good{color:#2e9763}.bad{color:#d43d65}
+.result-text{font-size:12px;line-height:1.55;color:#5a4b54}
+.judge-buttons{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.smallbtn{border:2px solid #755969;border-radius:12px;padding:8px 12px;font-weight:900;font-family:inherit;box-shadow:0 3px 0 #674d5b;background:#fff;color:#563f49}
+.hint-pop{display:none;margin-top:10px;text-align:left;background:#fff;border:2px dashed #d28aa7;border-radius:12px;padding:10px;font-size:11px;line-height:1.55;color:#5c4b53}
+.confetti{position:fixed;top:-20px;width:9px;height:15px;z-index:300;animation:conf 2.3s linear forwards}
+@keyframes conf{to{transform:translateY(110vh) rotate(760deg)}}
 </style>
 </head>
 <body>
 <div class="game-shell">
- <div class="header">
-  <div class="title">두근두근! ELISA 연구실</div>
-  <div class="subtitle">오늘도 교수님 몰래(?) 완벽한 실험에 도전!</div>
-  <div class="badge">LEVEL 1</div>
- </div>
- <div class="mission">🔎 <b>오늘의 의뢰:</b> 정체불명의 사람 검체 1개를 샌드위치 ELISA로 검사하세요.<br>순서는 알려주지 않습니다. 그림을 보며 생각해 보세요!</div>
- <div class="lab">
-  <div class="window"></div>
-  <div class="poster"><b>ELISA 한마디!</b><br>붙잡고 → 찾고 → 색으로 확인!</div>
-  <div class="shelf"></div><div class="bottle b1"></div><div class="bottle b2"></div><div class="bottle b3"></div>
-  <div class="caption" id="caption">빈 웰입니다. 무엇부터 넣어볼까요?</div>
-  <div class="bench"></div>
-  <div class="well-rim"></div>
-  <div class="well" id="well"><div class="liquid" id="liquid"></div><div class="well-floor"></div></div>
- </div>
- <div class="controls-title">▼ 시약을 골라 눌러 보세요 ▼</div>
- <div class="controls">
-  <button class="game-btn c5" onclick="act('detect')"><span class="ico">💗</span>찾는 항체</button>
-  <button class="game-btn c4" onclick="act('wash')"><span class="ico">🚿</span>씻기</button>
-  <button class="game-btn c1" onclick="act('capture')"><span class="ico">🧲</span>붙잡는 항체</button>
-  <button class="game-btn c7" onclick="act('tmb')"><span class="ico">✨</span>색 내는 액</button>
-  <button class="game-btn c3" onclick="act('sample')"><span class="ico">🧪</span>사람 검체</button>
-  <button class="game-btn c6" onclick="act('hrp')"><span class="ico">🟠</span>색 도우미</button>
-  <button class="game-btn c2" onclick="act('blocking')"><span class="ico">🧱</span>빈자리 막기</button>
-  <button class="game-btn c8" onclick="act('stop')"><span class="ico">🛑</span>색 멈추기</button>
- </div>
- <div class="actionbar">
-  <button class="action read" onclick="judge()">👨‍🔬 교수님 호출!</button>
-  <button class="action hint" onclick="quickHint()">💡 힌트</button>
-  <button class="action reset" onclick="resetGame()">↻ 다시</button>
- </div>
- <div class="progress"><div id="bar"></div></div>
- <div class="status" id="status">실험 준비 완료! 시약을 골라 주세요.</div>
+  <div class="header">
+    <div class="title">ELISA 연구실</div>
+    <div class="subtitle">샌드위치 ELISA 모바일 미니게임</div>
+  </div>
+
+  <div class="mission">
+    🔎 <b>오늘의 실험:</b> 정체불명의 <b>검체</b>를 샌드위치 ELISA로 검사하세요.<br>
+    무엇이 well에 남아야 하는지 보면서 시약과 <b>WASH</b> 순서를 선택해 보세요.
+  </div>
+
+  <div class="lab">
+    <div class="window"><div class="cloud cl1"></div><div class="cloud cl2"></div></div>
+    <div class="poster"><b>ELISA 한마디!</b><br>포획하고 → 검출하고 → 발색으로 확인!</div>
+    <div class="shelf"></div>
+    <div class="bottle b1"></div><div class="bottle b2"></div><div class="bottle b3"></div>
+    <div class="caption" id="caption">빈 well입니다. 무엇부터 넣어볼까요?</div>
+    <div class="bench"></div>
+
+    <div class="well-wrap">
+      <div class="well-rim-back"></div>
+      <div class="well-body" id="well">
+        <div class="liquid" id="liquid"></div>
+        <div class="reflection"></div>
+        <div class="well-floor"></div>
+      </div>
+      <div class="well-rim-front"></div>
+    </div>
+  </div>
+
+  <div class="controls-title">▼ 시약을 골라 눌러 보세요 ▼</div>
+  <div class="controls">
+    <button class="game-btn c5" onclick="act('detect')"><span class="ico">💗</span><span class="main">검출 항체</span><span class="sub">항원을 찾는 항체</span></button>
+    <button class="game-btn c4" onclick="act('wash')"><span class="ico">🚿</span><span class="main">WASH</span><span class="sub">씻기</span></button>
+    <button class="game-btn c1" onclick="act('capture')"><span class="ico">🧲</span><span class="main">포획 항체</span><span class="sub">항원을 붙잡음</span></button>
+    <button class="game-btn c7" onclick="act('tmb')"><span class="ico">✨</span><span class="main">발색 시약</span><span class="sub">TMB</span></button>
+    <button class="game-btn c3" onclick="act('sample')"><span class="ico">🧪</span><span class="main">검체</span><span class="sub">검사할 시료</span></button>
+    <button class="game-btn c6" onclick="act('hrp')"><span class="ico">🟠</span><span class="main">HRP 효소</span><span class="sub">발색을 도움</span></button>
+    <button class="game-btn c2" onclick="act('blocking')"><span class="ico">🧱</span><span class="main">Blocking</span><span class="sub">빈 공간 막기</span></button>
+    <button class="game-btn c8" onclick="act('stop')"><span class="ico">🛑</span><span class="main">정지액</span><span class="sub">반응 멈추기</span></button>
+  </div>
+
+  <div class="actionbar">
+    <button class="action read" onclick="judge()">👨‍🔬 교수님 확인</button>
+    <button class="action hint" onclick="quickHint()">💡 힌트</button>
+    <button class="action reset" onclick="resetGame()">↻ 다시</button>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="status" id="status">실험 준비 완료! 시약을 골라 주세요.</div>
+  <div class="footer-note">샌드위치 ELISA 미니게임</div>
 </div>
 
 <div class="start-overlay" id="start">
- <div class="start-card">
-  <h2>★ ELISA 연구실에 온 걸 환영해요! ★</h2>
-  <div class="start-illustration">🧑‍🔬🧪🔬</div>
-  <p>시약 버튼을 누르면 <b>웰 안으로 직접 떨어집니다.</b><br>붙지 않은 것들은 <b>씻기</b>로 없애고,<br>마지막에 교수님을 불러 결과를 확인하세요.</p>
-  <div class="tip">💡 어려우면 <b>“붙잡기 → 빈자리 막기 → 검체 → 찾기 → 색”</b>를 떠올려 보세요.<br>중간중간 무엇이 떠 있는지도 잘 보세요!</div>
-  <br><button class="start-btn" onclick="document.getElementById('start').style.display='none'">실험 시작!</button>
- </div>
+  <div class="card start-card">
+    <h2>게임 방법</h2>
+    <div class="start-illustration">🧪🔬</div>
+    <p>시약 버튼을 누르면 오브제가 <b>well 안으로 떨어집니다.</b><br>
+    붙지 않은 것은 <b>WASH</b>로 씻어내고,<br>마지막에 교수님께 결과를 확인받으세요.</p>
+    <div class="tip">💡 처음이라면 <b>포획 → Blocking → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지</b>를 떠올려 보세요.</div>
+    <button class="start-btn" onclick="document.getElementById('start').style.display='none'">실험 시작</button>
+  </div>
 </div>
 
-<div class="judge-overlay" id="judge">
- <div class="judge-card">
-  <div class="prof-scene">
-   <div class="door"></div>
-   <div class="prof" id="prof">
-    <div class="head"><div class="hair"></div><div class="eye e1"></div><div class="eye e2"></div><div class="glass g1"></div><div class="glass g2"></div><div class="bridge"></div><div class="mouth"></div></div>
-    <div class="body"></div><div class="tie"></div><div class="arm a1"></div><div class="arm a2"></div>
-   </div>
-   <div class="bubble" id="bubble">흠...</div>
+<div class="wash-overlay" id="washOverlay">
+  <div class="card wash-card">
+    <h2>WASH!</h2>
+    <div class="wash-scene">
+      <div class="wash-plate">
+        <div class="wp-rim"></div>
+        <div class="wp-body"><div class="wp-liquid"></div></div>
+      </div>
+      <div class="paper"></div>
+      <div class="splash">💦</div>
+      <div class="taptext">탁! 탁!</div>
+    </div>
+    <div class="wash-note">세척액을 제거한 뒤 plate를 흡수지에 가볍게 두드려 남은 액을 제거합니다.</div>
   </div>
-  <div class="result-title" id="resultTitle"></div>
-  <div class="result-text" id="resultText"></div>
-  <div class="hint-pop" id="hintPop"></div>
-  <div class="judge-buttons">
-   <button class="smallbtn" onclick="toggleHint()">💡 어디가 틀렸지?</button>
-   <button class="smallbtn" onclick="closeJudge()">계속하기</button>
+</div>
+
+<div class="judge-overlay" id="judgeOverlay">
+  <div class="card judge-card">
+    <div class="judge-scene">
+      <div class="j-window"></div>
+      <div class="j-well"><div class="j-liquid"></div></div>
+      <div class="j-bench"></div>
+      <div class="prof" id="prof">
+        <div class="head">
+          <div class="hair"></div>
+          <div class="eye e1"></div><div class="eye e2"></div>
+          <div class="glass g1"></div><div class="glass g2"></div><div class="bridge"></div>
+          <div class="mouth"></div>
+        </div>
+        <div class="body"></div><div class="tie"></div><div class="arm a1"></div><div class="arm a2"></div>
+      </div>
+      <div class="bubble" id="bubble">흠...</div>
+    </div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-text" id="resultText"></div>
+    <div class="hint-pop" id="hintPop"></div>
+    <div class="judge-buttons">
+      <button class="smallbtn" onclick="toggleHint()">💡 어디가 틀렸지?</button>
+      <button class="smallbtn" onclick="closeJudge()">계속하기</button>
+    </div>
   </div>
- </div>
 </div>
 
 <script>
-const well=document.getElementById('well'),liquid=document.getElementById('liquid');
+const well=document.getElementById('well');
+const liquid=document.getElementById('liquid');
 let actions=[],locked=false;
 let state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washSample:false,washDetect:false,washHrp:false};
-const labels={capture:'붙잡는 항체',blocking:'빈자리 막기',sample:'사람 검체',wash:'씻기',detect:'찾는 항체',hrp:'색 도우미',tmb:'색 내는 액',stop:'색 멈추기'};
+
+const labels={capture:'포획 항체',blocking:'Blocking',sample:'검체',wash:'WASH',detect:'검출 항체',hrp:'HRP 효소',tmb:'발색 시약',stop:'정지액'};
 function setCaption(t){document.getElementById('caption').textContent=t}
 function setStatus(t){document.getElementById('status').textContent=t}
 function updateBar(){document.getElementById('bar').style.width=Math.min(100,actions.length/11*100)+'%'}
-function make(type,left,bottom,extra=''){const d=document.createElement('div');d.className=`drop ${type} ${extra}`;d.style.left=left+'px';d.style.bottom=bottom+'px';if(type==='capture'||type==='detect')d.innerHTML='<div class="stem"></div>';if(type==='hrp')d.textContent='HRP';well.appendChild(d);return d}
+
+function make(type,left,bottom,extra=''){
+  const d=document.createElement('div');
+  d.className=`drop ${type} ${extra}`;
+  d.style.left=left+'px';d.style.bottom=bottom+'px';
+  if(type==='capture'||type==='detect')d.innerHTML='<div class="stem"></div>';
+  if(type==='hrp')d.textContent='HRP';
+  well.appendChild(d);return d;
+}
 function fallingBatch(type,positions,bottom,extra=''){positions.forEach((x,i)=>setTimeout(()=>make(type,x,bottom,extra),i*90))}
-function act(a){if(locked)return;actions.push(a);updateBar();setStatus(`「${labels[a]}」 사용!`);if(a==='capture')capture();if(a==='blocking')blocking();if(a==='sample')sample();if(a==='wash')wash();if(a==='detect')detect();if(a==='hrp')hrp();if(a==='tmb')tmb();if(a==='stop')stop()}
-function capture(){if(state.capture){setCaption('붙잡는 항체가 또 들어왔어요. 너무 많이 넣은 것 같은데...?');return}state.capture=true;fallingBatch('capture',[28,73,118,163,208],15);setCaption('파란 “붙잡는 항체”가 위에서 내려와 웰 바닥에 착 붙습니다!')}
-function blocking(){if(state.blocking){setCaption('빈자리는 이미 막혀 있어요.');return}state.blocking=true;fallingBatch('blocker',[8,58,105,153,203,235],16);setCaption('회색 막기 단백질이 내려와 바닥의 빈자리를 채웁니다.')}
-function sample(){if(state.sample){setCaption('검체를 또 넣었어요! 농도가 달라질 수도 있겠네요.');return}state.sample=true;if(state.capture)fallingBatch('antigen',[34,79,124,169,214],66);for(let i=0;i<7;i++)setTimeout(()=>make('antigen',15+Math.random()*215,88+Math.random()*62,'float removable samplefree'),i*85);setCaption(state.capture?'검체 속 항원이 내려옵니다. 일부는 붙잡는 항체에 딱 붙었어요!':'검체가 내려왔지만... 바닥에 항원을 붙잡아 줄 것이 있나요?')}
-function detect(){if(state.detect){setCaption('찾는 항체를 또 넣었습니다.');return}state.detect=true;if(state.capture&&state.sample)fallingBatch('detect',[31,76,121,166,211],83);for(let i=0;i<6;i++)setTimeout(()=>make('detect',12+Math.random()*220,115+Math.random()*36,'float removable detectfree'),i*85);setCaption('분홍 “찾는 항체”가 우수수! 맞는 항원을 만나면 위에 달라붙습니다.')}
-function hrp(){if(state.hrp){setCaption('색 도우미를 또 넣었어요.');return}state.hrp=true;if(state.detect&&state.sample&&state.capture)fallingBatch('hrp',[38,83,128,173,218],125);for(let i=0;i<6;i++)setTimeout(()=>make('hrp',10+Math.random()*225,145+Math.random()*25,'float removable hrpfree'),i*75);setCaption('주황색 “색 도우미(HRP)”가 내려옵니다. 붙지 않은 것도 많이 떠 있네요!')}
-function wash(){let wave=document.createElement('div');wave.className='wash-wave';well.appendChild(wave);setTimeout(()=>wave.remove(),1000);let rem=[...well.querySelectorAll('.removable')];rem.forEach((d,i)=>setTimeout(()=>{d.classList.add('wash-away');setTimeout(()=>d.remove(),760)},i*28));if(state.sample&&!state.detect)state.washSample=true;else if(state.detect&&!state.hrp)state.washDetect=true;else if(state.hrp&&!state.tmb)state.washHrp=true;setCaption(rem.length?`촤아악~! 붙지 않은 ${rem.length}개가 씻겨 나갑니다!`:'촤아악~! 그런데 씻겨 나갈 것이 거의 없어 보여요.')}
-function tmb(){state.tmb=true;liquid.style.background='rgba(83,181,246,.63)';setCaption('색 내는 액(TMB)을 넣자 웰이 파랗게 변하기 시작합니다!')}
-function stop(){state.stop=true;liquid.style.background='rgba(255,205,54,.78)';setCaption('색 멈추기! 반응이 멈추며 노란색으로 바뀝니다.')}
-function analyze(){const issues=[],p=x=>actions.indexOf(x);['capture','blocking','sample','detect','hrp','tmb','stop'].forEach(x=>{if(!actions.includes(x))issues.push('missing_'+x)});if(p('capture')>=0&&p('blocking')>=0&&p('blocking')<p('capture'))issues.push('order_block');if(p('capture')>=0&&p('sample')>=0&&p('sample')<p('capture'))issues.push('order_sample');if(p('sample')>=0&&p('detect')>=0&&p('detect')<p('sample'))issues.push('order_detect');if(p('detect')>=0&&p('hrp')>=0&&p('hrp')<p('detect'))issues.push('order_hrp');if(p('hrp')>=0&&p('tmb')>=0&&p('tmb')<p('hrp'))issues.push('order_tmb');if(p('tmb')>=0&&p('stop')>=0&&p('stop')<p('tmb'))issues.push('order_stop');if(state.sample&&state.detect&&!state.washSample)issues.push('wash_sample');if(state.detect&&state.hrp&&!state.washDetect)issues.push('wash_detect');if(state.hrp&&state.tmb&&!state.washHrp)issues.push('wash_hrp');return [...new Set(issues)]}
-const expl={missing_capture:'처음에 “붙잡는 항체”를 넣지 않았습니다. 항원이 웰에 붙잡히지 않습니다.',missing_blocking:'“빈자리 막기”를 하지 않았습니다. 엉뚱한 물질이 웰 바닥에 달라붙을 수 있습니다.',missing_sample:'사람 검체를 넣지 않았습니다.',missing_detect:'“찾는 항체”를 넣지 않았습니다. 붙잡힌 항원을 알아볼 수 없습니다.',missing_hrp:'“색 도우미”를 넣지 않았습니다. 색 반응을 만들 효소가 없습니다.',missing_tmb:'“색 내는 액”을 넣지 않았습니다.',missing_stop:'“색 멈추기”를 하지 않았습니다. 시간이 지날수록 색이 계속 변할 수 있습니다.',order_block:'빈자리 막기를 붙잡는 항체보다 먼저 했습니다.',order_sample:'검체를 붙잡는 항체보다 먼저 넣었습니다.',order_detect:'찾는 항체를 검체보다 먼저 넣었습니다.',order_hrp:'색 도우미를 찾는 항체보다 먼저 넣었습니다.',order_tmb:'색 내는 액을 색 도우미보다 먼저 넣었습니다.',order_stop:'색 멈추기를 색 내는 액보다 먼저 했습니다.',wash_sample:'검체 뒤에 “씻기”를 하지 않았습니다. 붙지 않은 검체 성분이 남아 있습니다.',wash_detect:'찾는 항체 뒤에 “씻기”를 하지 않았습니다. 남는 항체가 신호를 흐릴 수 있습니다.',wash_hrp:'색 도우미 뒤에 “씻기”를 하지 않았습니다. 떠다니는 HRP가 색 내는 액과 반응해 거짓 신호를 만들 수 있습니다.'}
-function judge(){locked=true;let issues=analyze(),ov=document.getElementById('judge'),prof=document.getElementById('prof');document.getElementById('hintPop').style.display='none';prof.classList.remove('inspect');void prof.offsetWidth;ov.style.display='flex';setTimeout(()=>prof.classList.add('inspect'),1500);setTimeout(()=>{const bubble=document.getElementById('bubble'),title=document.getElementById('resultTitle'),text=document.getElementById('resultText');if(issues.length===0){bubble.textContent='오호... 이 샌드위치, 제법인데?';title.className='result-title good';title.textContent='★ 실험 성공! ★';text.innerHTML='필요한 물질만 웰에 남도록 잘 씻어냈습니다.<br><b>붙잡는 항체 → 항원 → 찾는 항체 → HRP</b>가 차곡차곡 연결되었습니다.';confetti()}else{bubble.textContent=issues.includes('wash_hrp')?'으음...? 음성도 다 노래질 것 같은데!':'흠, 결과가 틀렸잖아!!!';title.className='result-title bad';title.textContent='실험이 이상합니다!';text.innerHTML='교수님이 웰을 한참 들여다보고 고개를 갸웃합니다.<br>아래의 <b>“어디가 틀렸지?”</b>를 눌러 확인해 보세요.'}document.getElementById('hintPop').innerHTML='<b>교수님의 메모</b><br>'+(issues.length?issues.map(x=>'• '+expl[x]).join('<br>'):'• 잘못된 부분이 없습니다. 순서와 씻기를 모두 잘 수행했습니다!')},3000)}
-function closeJudge(){document.getElementById('judge').style.display='none';locked=false}
-function toggleHint(){let h=document.getElementById('hintPop');h.style.display=h.style.display==='block'?'none':'block'}
-function quickHint(){let old=document.getElementById('caption').textContent;setCaption('💡 힌트: 붙잡기 → 빈자리 막기 → 검체 → 씻기 → 찾기 → 씻기 → 색 도우미 → 씻기 → 색 내기 → 멈추기');setTimeout(()=>{if(document.getElementById('caption').textContent.startsWith('💡'))setCaption(old)},5200)}
-function confetti(){for(let i=0;i<28;i++){let c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=['#ff78ad','#ffe066','#75d9e8','#9adc78','#b79bea'][i%5];c.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),3000)}}
-function resetGame(){actions=[];locked=false;state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washSample:false,washDetect:false,washHrp:false};[...well.querySelectorAll('.drop,.wash-wave')].forEach(x=>x.remove());liquid.style.background='rgba(156,220,245,.28)';updateBar();setCaption('빈 웰입니다. 무엇부터 넣어볼까요?');setStatus('실험 준비 완료! 시약을 골라 주세요.');document.getElementById('judge').style.display='none'}
+
+function act(a){
+  if(locked)return;
+  actions.push(a);updateBar();setStatus(`「${labels[a]}」 사용!`);
+  if(a==='capture')capture();
+  if(a==='blocking')blocking();
+  if(a==='sample')sample();
+  if(a==='wash')wash();
+  if(a==='detect')detect();
+  if(a==='hrp')hrp();
+  if(a==='tmb')tmb();
+  if(a==='stop')stop();
+}
+function capture(){
+  if(state.capture){setCaption('포획 항체가 이미 들어 있습니다.');return}
+  state.capture=true;
+  fallingBatch('capture',[30,78,126,174,222],15);
+  setCaption('파란 포획 항체가 well 바닥에 붙었습니다.');
+}
+function blocking(){
+  if(state.blocking){setCaption('Blocking은 이미 완료했습니다.');return}
+  state.blocking=true;
+  fallingBatch('blocker',[10,60,108,156,206,244],16);
+  setCaption('Blocking 단백질이 빈 공간을 채웠습니다.');
+}
+function sample(){
+  if(state.sample){setCaption('검체를 또 넣었습니다.');return}
+  state.sample=true;
+  if(state.capture)fallingBatch('antigen',[36,84,132,180,228],66);
+  for(let i=0;i<7;i++)setTimeout(()=>make('antigen',18+Math.random()*220,90+Math.random()*60,'float removable'),i*85);
+  setCaption(state.capture?'검체 속 항원이 들어왔습니다. 일부는 포획 항체에 붙었습니다.':'검체가 들어왔지만 포획 항체가 먼저 있었을까요?');
+}
+function detect(){
+  if(state.detect){setCaption('검출 항체가 이미 들어 있습니다.');return}
+  state.detect=true;
+  if(state.capture&&state.sample)fallingBatch('detect',[34,82,130,178,226],84);
+  for(let i=0;i<6;i++)setTimeout(()=>make('detect',14+Math.random()*225,115+Math.random()*38,'float removable'),i*85);
+  setCaption('검출 항체가 들어와 항원을 인식합니다.');
+}
+function hrp(){
+  if(state.hrp){setCaption('HRP 효소가 이미 들어 있습니다.');return}
+  state.hrp=true;
+  if(state.capture&&state.sample&&state.detect)fallingBatch('hrp',[40,88,136,184,232],125);
+  for(let i=0;i<6;i++)setTimeout(()=>make('hrp',12+Math.random()*225,146+Math.random()*24,'float removable'),i*75);
+  setCaption('HRP 효소가 들어왔습니다. 붙지 않은 HRP는 씻어내야 합니다.');
+}
+function wash(){
+  locked=true;
+
+  const rem=[...well.querySelectorAll('.removable')];
+
+  if(state.sample&&!state.detect)state.washSample=true;
+  else if(state.detect&&!state.hrp)state.washDetect=true;
+  else if(state.hrp&&!state.tmb)state.washHrp=true;
+
+  const ov=document.getElementById('washOverlay');
+  ov.style.display='flex';
+
+  setTimeout(()=>{
+    rem.forEach((d,i)=>setTimeout(()=>{d.classList.add('wash-away');setTimeout(()=>d.remove(),700)},i*25));
+  },650);
+
+  setTimeout(()=>{
+    ov.style.display='none';
+    setCaption(rem.length?`WASH 완료! 붙지 않은 ${rem.length}개가 제거되었습니다.`:'WASH 완료! 씻겨 나갈 물질이 거의 없었습니다.');
+    locked=false;
+  },2100);
+}
+function tmb(){state.tmb=true;liquid.style.background='linear-gradient(180deg,rgba(100,190,246,.66),rgba(65,151,230,.62))';setCaption('발색 시약(TMB)을 넣자 파란색 반응이 시작됩니다.')}
+function stop(){state.stop=true;liquid.style.background='linear-gradient(180deg,rgba(255,228,106,.88),rgba(255,196,44,.85))';setCaption('정지액을 넣어 반응을 멈췄습니다.')}
+
+function analyze(){
+  const issues=[],p=x=>actions.indexOf(x);
+  ['capture','blocking','sample','detect','hrp','tmb','stop'].forEach(x=>{if(!actions.includes(x))issues.push('missing_'+x)});
+  if(p('capture')>=0&&p('blocking')>=0&&p('blocking')<p('capture'))issues.push('order_block');
+  if(p('capture')>=0&&p('sample')>=0&&p('sample')<p('capture'))issues.push('order_sample');
+  if(p('sample')>=0&&p('detect')>=0&&p('detect')<p('sample'))issues.push('order_detect');
+  if(p('detect')>=0&&p('hrp')>=0&&p('hrp')<p('detect'))issues.push('order_hrp');
+  if(p('hrp')>=0&&p('tmb')>=0&&p('tmb')<p('hrp'))issues.push('order_tmb');
+  if(p('tmb')>=0&&p('stop')>=0&&p('stop')<p('tmb'))issues.push('order_stop');
+  if(state.sample&&state.detect&&!state.washSample)issues.push('wash_sample');
+  if(state.detect&&state.hrp&&!state.washDetect)issues.push('wash_detect');
+  if(state.hrp&&state.tmb&&!state.washHrp)issues.push('wash_hrp');
+  return [...new Set(issues)];
+}
+const expl={
+  missing_capture:'포획 항체를 넣지 않았습니다.',
+  missing_blocking:'Blocking을 하지 않았습니다.',
+  missing_sample:'검체를 넣지 않았습니다.',
+  missing_detect:'검출 항체를 넣지 않았습니다.',
+  missing_hrp:'HRP 효소를 넣지 않았습니다.',
+  missing_tmb:'발색 시약(TMB)을 넣지 않았습니다.',
+  missing_stop:'정지액을 넣지 않았습니다.',
+  order_block:'Blocking을 포획 항체보다 먼저 했습니다.',
+  order_sample:'검체를 포획 항체보다 먼저 넣었습니다.',
+  order_detect:'검출 항체를 검체보다 먼저 넣었습니다.',
+  order_hrp:'HRP 효소를 검출 항체보다 먼저 넣었습니다.',
+  order_tmb:'발색 시약을 HRP 효소보다 먼저 넣었습니다.',
+  order_stop:'정지액을 발색 시약보다 먼저 넣었습니다.',
+  wash_sample:'검체 뒤 WASH가 빠졌습니다.',
+  wash_detect:'검출 항체 뒤 WASH가 빠졌습니다.',
+  wash_hrp:'HRP 효소 뒤 WASH가 빠졌습니다.'
+};
+
+function judge(){
+  if(locked)return;
+  locked=true;
+  const issues=analyze();
+  const ov=document.getElementById('judgeOverlay');
+  const prof=document.getElementById('prof');
+  const bubble=document.getElementById('bubble');
+  const title=document.getElementById('resultTitle');
+  const text=document.getElementById('resultText');
+  const hint=document.getElementById('hintPop');
+
+  ov.style.display='flex';
+  hint.style.display='none';
+  bubble.className='bubble';
+  prof.className='prof';
+  title.textContent='';
+  text.textContent='';
+
+  requestAnimationFrame(()=>{
+    prof.classList.add('enter');
+
+    setTimeout(()=>{
+      prof.classList.remove('enter');
+      prof.classList.add('arrived','inspect');
+    },820);
+  });
+
+  setTimeout(()=>{
+    bubble.classList.add('show');
+    if(issues.length===0){
+      bubble.textContent='오호, 결과가 깔끔하군요.';
+      title.className='result-title good';
+      title.textContent='실험 성공!';
+      text.innerHTML='필요한 단계마다 WASH가 잘 되었고, 샌드위치 구조가 제대로 만들어졌습니다.';
+      confetti();
+    }else{
+      prof.classList.add('pout');
+      bubble.textContent='흥! 이 결과는 못 쓰겠는데요!';
+      title.className='result-title bad';
+      title.textContent='실험이 이상합니다!';
+      text.innerHTML='교수님이 well을 들여다보다가 입을 삐죽 내밀었습니다.<br><b>“어디가 틀렸지?”</b>를 눌러 확인해 보세요.';
+    }
+    hint.innerHTML='<b>교수님의 메모</b><br>'+(issues.length?issues.map(x=>'• '+expl[x]).join('<br>'):'• 잘못된 부분이 없습니다.');
+  },1800);
+}
+function closeJudge(){document.getElementById('judgeOverlay').style.display='none';locked=false}
+function toggleHint(){const h=document.getElementById('hintPop');h.style.display=h.style.display==='block'?'none':'block'}
+function quickHint(){
+  const old=document.getElementById('caption').textContent;
+  setCaption('💡 힌트: 포획 → Blocking → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지');
+  setTimeout(()=>{if(document.getElementById('caption').textContent.startsWith('💡'))setCaption(old)},5000);
+}
+function confetti(){
+  const colors=['#ff78ad','#ffe066','#75d9e8','#9adc78','#b79bea'];
+  for(let i=0;i<26;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.background=colors[i%colors.length];
+    c.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2800);
+  }
+}
+function resetGame(){
+  actions=[];locked=false;
+  state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washSample:false,washDetect:false,washHrp:false};
+  [...well.querySelectorAll('.drop')].forEach(x=>x.remove());
+  liquid.style.background='linear-gradient(180deg,rgba(178,229,249,.35),rgba(137,209,239,.38))';
+  updateBar();setCaption('빈 well입니다. 무엇부터 넣어볼까요?');setStatus('실험 준비 완료! 시약을 골라 주세요.');
+  document.getElementById('judgeOverlay').style.display='none';
+  document.getElementById('washOverlay').style.display='none';
+}
 </script>
 </body>
 </html>
