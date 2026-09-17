@@ -374,13 +374,42 @@ body{
   font-size:10px; color:#8b717c; margin-top:8px;
 }
 
+
+.bgm-toggle{
+  position:absolute;
+  right:12px;
+  top:11px;
+  width:36px;
+  height:36px;
+  border:2px solid #8c6a7c;
+  border-radius:50%;
+  background:linear-gradient(#fff8fb,#ffd9e8);
+  color:#b94f7c;
+  font-size:17px;
+  font-weight:900;
+  box-shadow:0 3px 0 #785768,inset 0 2px 0 #fff;
+  z-index:20;
+  cursor:pointer;
+}
+.bgm-toggle:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #785768;
+}
+.bgm-toggle.off{
+  filter:grayscale(.65);
+  opacity:.72;
+}
+.header{position:relative}
+
 </style>
 </head>
 <body>
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
 <div class="game-shell">
   <div class="header">
     <div class="title">ELISA 연구실</div>
     <div class="subtitle">샌드위치 ELISA 모바일 미니게임</div>
+    <button class="bgm-toggle" id="bgmToggle" onclick="toggleBgm()" aria-label="배경음악 켜기/끄기">♪</button>
   </div>
 
   <div class="mission">
@@ -436,7 +465,7 @@ body{
     <p>시약 버튼을 누르면 오브제가 <b>well 안으로 떨어집니다.</b><br>
     붙지 않은 것은 <b>WASH</b>로 씻어내고,<br>마지막에 교수님께 결과를 확인받으세요.</p>
     <div class="tip">💡 처음이라면 <b>포획 → Blocking → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지</b>를 떠올려 보세요.</div>
-    <button class="start-btn" onclick="document.getElementById('start').style.display='none'">실험 시작</button>
+    <button class="start-btn" onclick="startGameWithBgm()">실험 시작</button>
   </div>
 </div>
 
@@ -832,6 +861,50 @@ function spawnStar(){
 
   miniPlayground.appendChild(star);
   setTimeout(() => { if (star.isConnected) star.remove(); }, duration + 80);
+}
+
+
+/* background music */
+const bgm = document.getElementById('bgm');
+const bgmToggle = document.getElementById('bgmToggle');
+let bgmWanted = true;
+
+if (bgm) {
+  bgm.volume = 0.38;
+}
+
+function startGameWithBgm(){
+  document.getElementById('start').style.display = 'none';
+  if (bgmWanted && bgm) {
+    bgm.play().catch(() => {});
+  }
+  updateBgmButton();
+}
+
+function toggleBgm(){
+  if (!bgm) return;
+  bgmWanted = !bgmWanted;
+
+  if (bgmWanted) {
+    bgm.play().catch(() => {});
+  } else {
+    bgm.pause();
+  }
+  updateBgmButton();
+}
+
+function updateBgmButton(){
+  if (!bgmToggle) return;
+  const playing = bgm && !bgm.paused && bgmWanted;
+  bgmToggle.textContent = playing ? '♫' : '♪';
+  bgmToggle.classList.toggle('off', !playing);
+  bgmToggle.title = playing ? '배경음악 끄기' : '배경음악 켜기';
+}
+
+if (bgm) {
+  bgm.addEventListener('play', updateBgmButton);
+  bgm.addEventListener('pause', updateBgmButton);
+  bgm.addEventListener('ended', updateBgmButton);
 }
 
 </script>
