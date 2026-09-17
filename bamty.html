@@ -406,6 +406,8 @@ body{
 <body>
 <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
 <audio id="clickSfx" src="click.mp3" preload="auto"></audio>
+<audio id="successSfx" src="success.mp3" preload="auto"></audio>
+<audio id="badSfx" src="bad.mp3" preload="auto"></audio>
 <div class="game-shell">
   <div class="header">
     <div class="title">ELISA 연구실</div>
@@ -707,6 +709,11 @@ function judge(){
     }
     hint.innerHTML='<b>교수님의 메모</b><br>'+(issues.length?issues.map(x=>'• '+expl[x]).join('<br>'):'• 잘못된 부분이 없습니다.');
   },1800);
+
+  // Result jingle: play a little after the result scene opens, not immediately.
+  setTimeout(()=>{
+    playResultSound(issues.length===0 ? 'success' : 'bad');
+  },2200);
 }
 function closeJudge(){document.getElementById('judgeOverlay').style.display='none';locked=false}
 function toggleHint(){const h=document.getElementById('hintPop');h.style.display=h.style.display==='block'?'none':'block'}
@@ -908,6 +915,20 @@ if (bgm) {
   bgm.addEventListener('ended', updateBgmButton);
 }
 
+
+
+/* result sounds */
+const successSfx = document.getElementById('successSfx');
+const badSfx = document.getElementById('badSfx');
+
+function playResultSound(kind){
+  const base = kind === 'success' ? successSfx : badSfx;
+  if (!base) return;
+  const sfx = base.cloneNode(true);
+  sfx.volume = kind === 'success' ? 0.82 : 0.78;
+  sfx.play().catch(() => {});
+  sfx.addEventListener('ended', () => sfx.remove());
+}
 
 /* button click sound */
 const clickSfx = document.getElementById('clickSfx');
