@@ -405,6 +405,7 @@ body{
 </head>
 <body>
 <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+<audio id="clickSfx" src="click.mp3" preload="auto"></audio>
 <div class="game-shell">
   <div class="header">
     <div class="title">ELISA 연구실</div>
@@ -906,6 +907,27 @@ if (bgm) {
   bgm.addEventListener('pause', updateBgmButton);
   bgm.addEventListener('ended', updateBgmButton);
 }
+
+
+/* button click sound */
+const clickSfx = document.getElementById('clickSfx');
+
+function playClickSound(){
+  if (!clickSfx) return;
+
+  // Clone allows rapid repeated taps without cutting off the previous sound.
+  const sfx = clickSfx.cloneNode(true);
+  sfx.volume = 0.72;
+  sfx.play().catch(() => {});
+  sfx.addEventListener('ended', () => sfx.remove());
+}
+
+// Play on every actual button tap/click, including the hidden mini-game buttons.
+document.addEventListener('click', (event) => {
+  const btn = event.target.closest('button');
+  if (!btn) return;
+  playClickSound();
+}, {passive:true});
 
 </script>
 
