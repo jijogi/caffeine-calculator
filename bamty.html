@@ -417,7 +417,7 @@ body{
 
   <div class="mission">
     🔎 <b>오늘의 실험:</b> 정체불명의 <b>검체</b>를 샌드위치 ELISA로 검사하세요.<br>
-    무엇이 well에 남아야 하는지 보면서 시약과 <b>WASH</b> 순서를 선택해 보세요.
+    무엇이 well에 붙고 무엇이 떠 있는지 보면서 시약과 <b>WASH</b> 순서를 선택해 보세요.
   </div>
 
   <div class="lab">
@@ -467,7 +467,7 @@ body{
     <div class="start-illustration">🧪🔬</div>
     <p>시약 버튼을 누르면 오브제가 <b>well 안으로 떨어집니다.</b><br>
     붙지 않은 것은 <b>WASH</b>로 씻어내고,<br>마지막에 교수님께 결과를 확인받으세요.</p>
-    <div class="tip">💡 처음이라면 <b>포획 → Blocking → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지</b>를 떠올려 보세요.</div>
+    <div class="tip">💡 처음이라면 <b>포획 → WASH → Blocking → WASH → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지</b>를 떠올려 보세요.</div>
     <button class="start-btn" onclick="startGameWithBgm()">실험 시작</button>
   </div>
 </div>
@@ -545,7 +545,7 @@ body{
 const well=document.getElementById('well');
 const liquid=document.getElementById('liquid');
 let actions=[],locked=false;
-let state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washSample:false,washDetect:false,washHrp:false};
+let state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washCapture:false,washBlocking:false,washSample:false,washDetect:false,washHrp:false};
 
 const labels={capture:'포획 항체',blocking:'Blocking',sample:'검체',wash:'WASH',detect:'검출 항체',hrp:'HRP 효소',tmb:'발색 시약',stop:'정지액'};
 function setCaption(t){document.getElementById('caption').textContent=t}
@@ -578,13 +578,19 @@ function capture(){
   if(state.capture){setCaption('포획 항체가 이미 들어 있습니다.');return}
   state.capture=true;
   fallingBatch('capture',[30,78,126,174,222],15);
-  setCaption('파란 포획 항체가 well 바닥에 붙었습니다.');
+  for(let i=0;i<5;i++){
+    setTimeout(()=>make('capture',18+Math.random()*215,92+Math.random()*58,'float removable capturefree'),i*85);
+  }
+  setCaption('포획 항체를 넣었습니다. 일부는 well 바닥에 붙고, 붙지 않은 항체도 남아 있습니다. WASH가 필요합니다.');
 }
 function blocking(){
   if(state.blocking){setCaption('Blocking은 이미 완료했습니다.');return}
   state.blocking=true;
   fallingBatch('blocker',[10,60,108,156,206,244],16);
-  setCaption('Blocking 단백질이 빈 공간을 채웠습니다.');
+  for(let i=0;i<6;i++){
+    setTimeout(()=>make('blocker',15+Math.random()*225,85+Math.random()*62,'float removable blockerfree'),i*75);
+  }
+  setCaption('Blocking 단백질이 빈 공간을 채웠습니다. 남아 있는 Blocking 성분은 WASH로 제거해야 합니다.');
 }
 function sample(){
   if(state.sample){setCaption('검체를 또 넣었습니다.');return}
@@ -612,7 +618,9 @@ function wash(){
 
   const rem=[...well.querySelectorAll('.removable')];
 
-  if(state.sample&&!state.detect)state.washSample=true;
+  if(state.capture&&!state.blocking)state.washCapture=true;
+  else if(state.blocking&&!state.sample)state.washBlocking=true;
+  else if(state.sample&&!state.detect)state.washSample=true;
   else if(state.detect&&!state.hrp)state.washDetect=true;
   else if(state.hrp&&!state.tmb)state.washHrp=true;
 
@@ -641,6 +649,8 @@ function analyze(){
   if(p('detect')>=0&&p('hrp')>=0&&p('hrp')<p('detect'))issues.push('order_hrp');
   if(p('hrp')>=0&&p('tmb')>=0&&p('tmb')<p('hrp'))issues.push('order_tmb');
   if(p('tmb')>=0&&p('stop')>=0&&p('stop')<p('tmb'))issues.push('order_stop');
+  if(state.capture&&state.blocking&&!state.washCapture)issues.push('wash_capture');
+  if(state.blocking&&state.sample&&!state.washBlocking)issues.push('wash_blocking');
   if(state.sample&&state.detect&&!state.washSample)issues.push('wash_sample');
   if(state.detect&&state.hrp&&!state.washDetect)issues.push('wash_detect');
   if(state.hrp&&state.tmb&&!state.washHrp)issues.push('wash_hrp');
@@ -660,6 +670,8 @@ const expl={
   order_hrp:'HRP 효소를 검출 항체보다 먼저 넣었습니다.',
   order_tmb:'발색 시약을 HRP 효소보다 먼저 넣었습니다.',
   order_stop:'정지액을 발색 시약보다 먼저 넣었습니다.',
+  wash_capture:'포획 항체 처리 뒤 WASH가 빠졌습니다. 붙지 않은 포획 항체가 남아 있습니다.',
+  wash_blocking:'Blocking 뒤 WASH가 빠졌습니다. 남아 있는 Blocking 성분이 충분히 제거되지 않았습니다.',
   wash_sample:'검체 뒤 WASH가 빠졌습니다.',
   wash_detect:'검출 항체 뒤 WASH가 빠졌습니다.',
   wash_hrp:'HRP 효소 뒤 WASH가 빠졌습니다.'
@@ -710,7 +722,6 @@ function judge(){
     hint.innerHTML='<b>교수님의 메모</b><br>'+(issues.length?issues.map(x=>'• '+expl[x]).join('<br>'):'• 잘못된 부분이 없습니다.');
   },1800);
 
-  // Result jingle: play a little after the result scene opens, not immediately.
   setTimeout(()=>{
     playResultSound(issues.length===0 ? 'success' : 'bad');
   },2200);
@@ -719,7 +730,7 @@ function closeJudge(){document.getElementById('judgeOverlay').style.display='non
 function toggleHint(){const h=document.getElementById('hintPop');h.style.display=h.style.display==='block'?'none':'block'}
 function quickHint(){
   const old=document.getElementById('caption').textContent;
-  setCaption('💡 힌트: 포획 → Blocking → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지');
+  setCaption('💡 힌트: 포획 → WASH → Blocking → WASH → 검체 → WASH → 검출 → WASH → HRP → WASH → 발색 → 정지');
   setTimeout(()=>{if(document.getElementById('caption').textContent.startsWith('💡'))setCaption(old)},5000);
 }
 function confetti(){
@@ -732,7 +743,7 @@ function confetti(){
 }
 function resetGame(){
   actions=[];locked=false;
-  state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washSample:false,washDetect:false,washHrp:false};
+  state={capture:false,blocking:false,sample:false,detect:false,hrp:false,tmb:false,stop:false,washCapture:false,washBlocking:false,washSample:false,washDetect:false,washHrp:false};
   [...well.querySelectorAll('.drop')].forEach(x=>x.remove());
   liquid.style.background='linear-gradient(180deg,rgba(178,229,249,.35),rgba(137,209,239,.38))';
   updateBar();setCaption('빈 well입니다. 무엇부터 넣어볼까요?');setStatus('실험 준비 완료! 시약을 골라 주세요.');
@@ -925,7 +936,7 @@ function playResultSound(kind){
   const base = kind === 'success' ? successSfx : badSfx;
   if (!base) return;
   const sfx = base.cloneNode(true);
-  sfx.volume = kind === 'success' ? 0.82 : 0.78;
+  sfx.volume = kind === 'success' ? 1.0 : 0.42;
   sfx.play().catch(() => {});
   sfx.addEventListener('ended', () => sfx.remove());
 }
